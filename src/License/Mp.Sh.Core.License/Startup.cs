@@ -1,4 +1,12 @@
-﻿using System;
+﻿/****************************** Module Header ******************************\
+Module Name:  <File Name>
+Project:      <Sample Name>
+Copyright (c) Mproof B.V.
+
+Last Edit: Raffaele Garofalo
+\***************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +20,7 @@ namespace Mp.Sh.Core.License
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-        }
+        #region Public Methods
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -28,10 +32,20 @@ namespace Mp.Sh.Core.License
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            app.UseIdentityServer(); // inform that this is an identity server
         }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // add identity server functionalities
+            services
+                .AddIdentityServer()
+                .AddTemporarySigningCredential() // [temporary for development]
+                .AddInMemoryApiResources(Config.GetApiResources())
+                .AddInMemoryClients(Config.GetClients());
+        }
+
+        #endregion Public Methods
     }
 }
