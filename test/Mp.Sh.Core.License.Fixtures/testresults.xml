@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<assemblies>
+  <assembly name="Mp.Sh.Core.License.Fixtures.dll" environment="64-bit .NET (unknown version) [collection-per-class, parallel (8 threads)]" test-framework="xUnit.net 2.2.0.3474" run-date="2017-01-21" run-time="12:53:20" total="1" passed="1" failed="0" skipped="0" time="0.104" errors="0">
+    <errors />
+    <collection total="1" passed="1" failed="0" skipped="0" name="Test collection for Mp.Sh.Core.License.Fixtures.Discover_Fixtures" time="0.005">
+      <test name="Mp.Sh.Core.License.Fixtures.Discover_Fixtures.Discover_Returns_GrantTypes" type="Mp.Sh.Core.License.Fixtures.Discover_Fixtures" method="Discover_Returns_GrantTypes" time="0.0052085" result="Pass" />
+    </collection>
+  </assembly>
+</assemblies>
