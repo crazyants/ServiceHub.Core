@@ -6,15 +6,19 @@ Copyright (c) Mproof B.V.
 Last Edit: Raffaele Garofalo
 \***************************************************************************/
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace Mp.Sh.Core.License.Fixtures
+namespace Mp.Sh.Core.OData.Fixtures
 {
-    public class Discover_Fixtures
+    public class MetadataEndpoint
     {
         #region Public Constructors
 
-        public Discover_Fixtures()
+        public MetadataEndpoint()
         {
         }
 
@@ -23,7 +27,7 @@ namespace Mp.Sh.Core.License.Fixtures
         #region Public Methods
 
         [Fact]
-        public void Discover_Returns_GrantTypes()
+        public void MetadataEndpoint_Should_Return_200()
         {
             Assert.True(true);
         }
