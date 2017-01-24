@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:16071/",
+      "applicationUrl": "http://localhost:83/",
       "sslPort": 0
     }
   },
@@ -16,7 +16,7 @@
     },
     "Mp.Sh.Core.License": {
       "commandName": "Project",
-      "launchUrl": "http://localhost:8083",
+      "launchUrl": "http://localhost:83",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

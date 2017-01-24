@@ -14,6 +14,10 @@ using Xunit;
 using FluentAssertions;
 using System;
 using System.Net;
+using IdentityModel.Client;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Mp.Sh.Core.License.Fixtures.Integration
 {
@@ -30,14 +34,30 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
 
         public DiscoverEndpoint()
         {
-            server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>());
+            var builder = new WebHostBuilder().UseStartup<Startup>();
+            builder.UseUrls("http://localhost:83");
+            server = new TestServer(builder);
             client = server.CreateClient();
         }
 
         #endregion Public Constructors
 
         #region Public Methods
+
+        [Fact]
+        public async void DiscoverEndpoint_Should_GrantClientCredentials_ForOData()
+        {
+            var content = new FormUrlEncodedContent(
+                new[] {
+                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                    new KeyValuePair<string, string>("client_id", "api_client"),
+                    new KeyValuePair<string, string>("client_secret", "secret")
+                }
+            );
+
+            var response = await client.PostAsync("/connect/token", content);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
 
         [Fact]
         public async void DiscoverEndpoint_Should_Returns_200()

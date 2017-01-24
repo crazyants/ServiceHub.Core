@@ -6,13 +6,9 @@ Copyright (c) Mproof B.V.
 Last Edit: Raffaele Garofalo
 \***************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Mp.Sh.Core.OData.Fixtures
+namespace Mp.Sh.Core.OData.Fixtures.Integration
 {
     public class MetadataEndpoint
     {

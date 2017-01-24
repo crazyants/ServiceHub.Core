@@ -7,7 +7,9 @@ Last Edit: Raffaele Garofalo
 \***************************************************************************/
 
 using Microsoft.AspNetCore.Hosting;
+using System;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace Mp.Sh.Core.License
 {
@@ -17,9 +19,16 @@ namespace Mp.Sh.Core.License
 
         public static void Main(string[] args)
         {
+            Console.Title = "License Manager Core | Mproof";
+
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("hosting.json", optional: true)
+                .Build();
+
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseUrls("http://localhost:8083")
+                .UseConfiguration(config)
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
