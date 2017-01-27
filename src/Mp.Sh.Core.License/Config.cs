@@ -7,6 +7,7 @@ Last Edit: Raffaele Garofalo
 \***************************************************************************/
 
 using IdentityServer4.Models;
+using IdentityServer4.Test;
 using System.Collections.Generic;
 
 namespace Mp.Sh.Core.License
@@ -64,6 +65,41 @@ namespace Mp.Sh.Core.License
                     },
                     // scopes that client has access to
                     AllowedScopes = { "odata" }
+                },
+                new Client
+                {
+                    ClientId = "ro_client",
+                    // allow interactive user
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    // this client can use only odata
+                    AllowedScopes = { "odata" }
+                }
+            };
+        }
+
+        /// <summary>
+        /// Provide a list of Users with the correspective claims 
+        /// </summary>
+        /// <returns></returns>
+        public static List<TestUser> GetUsers()
+        {
+            return new List<TestUser>
+            {
+                new TestUser
+                {
+                    SubjectId = "1",
+                    Username = "alice",
+                    Password = "password"
+                },
+                new TestUser
+                {
+                    SubjectId = "2",
+                    Username = "bob",
+                    Password = "password"
                 }
             };
         }

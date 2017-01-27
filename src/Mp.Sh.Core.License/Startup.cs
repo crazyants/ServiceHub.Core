@@ -38,7 +38,8 @@ namespace Mp.Sh.Core.License
                 .AddIdentityServer()
                 .AddTemporarySigningCredential() // [temporary for development]
                 .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryClients(Config.GetClients());
+                .AddInMemoryClients(Config.GetClients())
+                .AddTestUsers(Config.GetUsers());
         }
 
         #endregion Public Methods

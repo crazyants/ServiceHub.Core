@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.OData.Fixtures.Integration
 {
@@ -25,26 +26,28 @@ namespace Mp.Sh.Core.OData.Fixtures.Integration
 
         private readonly HttpClient apiClient;
         private readonly TestServer apiServer;
-        private readonly IWebHost inte;
+        private readonly IWebHost intServer;
+        private readonly ITestOutputHelper output;
 
         #endregion Private Fields
 
         #region Public Constructors
 
-        public PersonsEndpoint()
+        public PersonsEndpoint(ITestOutputHelper output)
         {
+            this.output = output;
             var apiBuilder = new WebHostBuilder()
                 .UseStartup<OData.Startup>();
             apiBuilder.UseUrls("http://localhost:82");
             apiServer = new TestServer(apiBuilder);
             apiClient = apiServer.CreateClient();
 
-            inte = new WebHostBuilder()
+            intServer = new WebHostBuilder()
                 .UseKestrel()
                 .UseIISIntegration()
                 .UseStartup<License.Startup>()
                 .UseUrls("http://locahost:83").Build();
-            inte.Start();
+            intServer.Start();
         }
 
         #endregion Public Constructors
@@ -55,7 +58,7 @@ namespace Mp.Sh.Core.OData.Fixtures.Integration
         {
             apiClient.Dispose();
             apiServer.Dispose();
-            inte.Dispose();
+            intServer.Dispose();
         }
 
         [Fact]
@@ -65,6 +68,21 @@ namespace Mp.Sh.Core.OData.Fixtures.Integration
             apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Result}");
 
             var response = await apiClient.GetAsync("/persons");
+            var responseString = await response.Content.ReadAsStringAsync();
+            output.WriteLine(responseString);
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async void PersonsEndpoint_Authenticated_WithUser_Returns_200()
+        {
+            var token = GetUserToken();
+            apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Result}");
+
+            var response = await apiClient.GetAsync("/persons");
+            var responseString = await response.Content.ReadAsStringAsync();
+            output.WriteLine(responseString);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
@@ -73,6 +91,8 @@ namespace Mp.Sh.Core.OData.Fixtures.Integration
         public async void PersonsEndpoint_NotAuthenticated_Returns_401()
         {
             var response = await apiClient.GetAsync("/persons");
+            var responseString = await response.Content.ReadAsStringAsync();
+            output.WriteLine(responseString);
 
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
@@ -96,6 +116,29 @@ namespace Mp.Sh.Core.OData.Fixtures.Integration
 
             var response = await idenClient.PostAsync("/connect/token", content);
             var responseString = await response.Content.ReadAsStringAsync();
+            output.WriteLine(responseString);
+            dynamic responseJson = JsonConvert.DeserializeObject(responseString);
+            return responseJson.access_token;
+        }
+
+        private async Task<string> GetUserToken()
+        {
+            HttpClient idenClient = new HttpClient();
+            idenClient.BaseAddress = new Uri("http://localhost:83");
+
+            var content = new FormUrlEncodedContent(
+                new[] {
+                    new KeyValuePair<string, string>("grant_type", "password"),
+                    new KeyValuePair<string, string>("username", "alice"),
+                    new KeyValuePair<string, string>("password", "password"),
+                    new KeyValuePair<string, string>("client_id", "ro_client"),
+                    new KeyValuePair<string, string>("client_secret", "secret")
+                }
+            );
+
+            var response = await idenClient.PostAsync("/connect/token", content);
+            var responseString = await response.Content.ReadAsStringAsync();
+            output.WriteLine(responseString);
             dynamic responseJson = JsonConvert.DeserializeObject(responseString);
             return responseJson.access_token;
         }

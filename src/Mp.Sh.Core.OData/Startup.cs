@@ -52,11 +52,12 @@ namespace Mp.Sh.Core.OData
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            var identitySection = Configuration.GetSection("Identity");
+
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
                 Authority = "http://localhost:83",
                 RequireHttpsMetadata = false,
-
                 ApiName = "odata"
             });
 
