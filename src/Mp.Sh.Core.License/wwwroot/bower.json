@@ -1,0 +1,25 @@
+{
+  "name": "wwwroot",
+  "homepage": "https://github.com/Mproof/ServiceHub.Core",
+  "description": "Service Hub License Manager",
+  "main": "",
+  "authors": [
+    "Raffaele Garofalo"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#2.0-preview",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.7"
+  },
+  "resolutions": {
+    "polymer": "2.0-preview",
+    "webcomponentsjs": "v1"
+  }
+}

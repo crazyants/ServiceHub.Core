@@ -52,8 +52,13 @@ namespace Mp.Sh.Core.OData
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            var identitySection = Configuration.GetSection("Identity");
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
+            /* configure security for this web app */
+            var identitySection = Configuration.GetSection("Identity");
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
                 Authority = "http://localhost:83",
@@ -61,6 +66,7 @@ namespace Mp.Sh.Core.OData
                 ApiName = "odata"
             });
 
+            /*use asp.net core mvc stack */
             app.UseMvc();
         }
 

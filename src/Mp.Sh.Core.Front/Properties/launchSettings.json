@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:16290/",
+      "applicationUrl": "http://localhost:81/",
       "sslPort": 0
     }
   },
@@ -18,7 +18,7 @@
     "Mp.Sh.Core.Front": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5000",
+      "launchUrl": "http://localhost:81",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

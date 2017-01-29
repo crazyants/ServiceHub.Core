@@ -6,6 +6,7 @@ Copyright (c) Mproof B.V.
 Last Edit: Raffaele Garofalo
 \***************************************************************************/
 
+using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using System.Collections.Generic;
@@ -77,7 +78,39 @@ namespace Mp.Sh.Core.License
                     },
                     // this client can use only odata
                     AllowedScopes = { "odata" }
+                },
+                // OpenID Connect implicit flow client (MVC)
+                new Client
+                {
+                    ClientId = "mvc_client",
+                    ClientName = "MVC Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+
+                    // where to redirect to after login
+                    RedirectUris = { "http://localhost:81/signin-oidc" },
+
+                    // where to redirect to after logout
+                    PostLogoutRedirectUris = { "http://localhost:81" },
+
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile
+                    }
                 }
+            };
+        }
+
+        /// <summary>
+        /// Provide a list of supported OIDC (OpenID Connect) info (i.e. Subject ID, Profile, Username) 
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<IdentityResource> GetIdentityResources()
+        {
+            return new List<IdentityResource>
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
             };
         }
 
