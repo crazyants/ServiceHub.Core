@@ -1,5 +1,6 @@
 {
   "name": "polymer",
+  "version": "1.7.1",
   "main": [
     "polymer.html",
     "polymer-mini.html",
@@ -10,7 +11,9 @@
     "/.*",
     "/test/",
     "/util/",
+    "/explainer/",
     "gulpfile.js",
+    "PRIMER.md",
     "CONTRIBUTING.md",
     "CHANGELOG.md"
   ],
@@ -22,25 +25,22 @@
     "url": "https://github.com/Polymer/polymer.git"
   },
   "dependencies": {
-    "webcomponentsjs": "#v1"
+    "webcomponentsjs": "^0.7.20"
   },
   "devDependencies": {
     "web-component-tester": "*",
-    "test-fixture": "PolymerElements/test-fixture#custom-elements-v1"
+    "iron-component-page": "polymerElements/iron-component-page#^1.1.6"
   },
   "private": true,
-  "resolutions": {
-    "test-fixture": "custom-elements-v1"
-  },
   "homepage": "https://github.com/Polymer/polymer",
-  "_release": "3eb62e8fe9",
+  "_release": "1.7.1",
   "_resolution": {
-    "type": "branch",
-    "branch": "2.0-preview",
-    "commit": "3eb62e8fe9256f8f0093a7d53c1f8c4dc14888ea"
+    "type": "version",
+    "tag": "v1.7.1",
+    "commit": "39d185fecfeb6957835aaa80f7f28dd6924a3b29"
   },
   "_source": "https://github.com/Polymer/polymer.git",
-  "_target": "2.0-preview",
+  "_target": "^1.7.1",
   "_originalSource": "Polymer/polymer",
   "_direct": true
 }

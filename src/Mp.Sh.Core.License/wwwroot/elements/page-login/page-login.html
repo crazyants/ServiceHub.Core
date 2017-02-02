@@ -1,0 +1,115 @@
+﻿<link rel="import" href="../../bower_components/polymer/polymer.html" />
+<link rel="import" href="../../bower_components/paper-card/paper-card.html" />
+<link rel="import" href="../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../bower_components/paper-input/paper-input.html" />
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html" />
+<link rel="import" href="../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../bower_components/iron-image/iron-image.html" />
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html" />
+<link rel="import" href="../paper-icon/social-icon.html" />
+
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="../paper-theme/paper-theme.html" />
+
+<dom-module id="page-login">
+    <template>
+
+        <style include="iron-flex iron-flex-alignment paper-theme">
+            .card-content {
+                margin: 0 10px;
+            }
+
+            div:first-of-type {
+                height: 100%;
+            }
+
+            .sign-in {
+                width: 160px;
+                margin: 10px 0;
+            }
+
+            .separator-container {
+                margin: 10px 0;
+            }
+
+            .separator {
+                width: 50px;
+                border-bottom: 1px solid #BDBDBD;
+            }
+
+            .separator-text {
+                color: #BDBDBD;
+            }
+
+            paper-icon-button {
+                width: 65px;
+                height: 65px;
+            }
+
+            .facebook {
+                color: #6D84B4;
+            }
+
+            .google {
+                color: #D34836;
+            }
+
+            .twitter {
+                color: #0084B4;
+            }
+
+            .linkedin {
+                color: #007BB5;
+            }
+
+            .footer {
+                margin-top: 45px;
+            }
+        </style>
+
+        <div class="layout horizontal center-justified">
+            <div class="layout vertical center-justified">
+                <paper-card image="../../img/login_header.png">
+                    <div class="card-content">
+                        <paper-input required
+                                     error-message="The Username can't be empty'"
+                                     label="USERNAME"></paper-input>
+                        <paper-input required
+                                     error-message="The Password can't be empty'"
+                                     type="password"
+                                     label="PASSWORD"></paper-input>
+                        <div class="layout horizontal center justified">
+                            <paper-checkbox>Remember Me</paper-checkbox>
+                            <paper-button class="default">Forgot</paper-button>
+                        </div>
+                        <div class="layout horizontal center-justified">
+                            <paper-button raised class="indigo sign-in">Sign In</paper-button>
+                        </div>
+                        <div class="layout horizontal center around-justified separator-container">
+                            <span class="separator"></span>
+                            <span class="separator-text">OR</span>
+                            <span class="separator"></span>
+                        </div>
+                        <div class="layout horizontal center around-justified">
+                            <paper-icon-button class="facebook" icon="social:facebook"></paper-icon-button>
+                            <paper-icon-button class="google" icon="social:google"></paper-icon-button>
+                            <paper-icon-button class="twitter" icon="social:twitter"></paper-icon-button>
+                            <paper-icon-button class="linkedin" icon="social:linkedin"></paper-icon-button>
+                        </div>
+                        <div class="layout horizontal center justified footer">
+                            <span class="separator-text">Don't you have an account?</span>
+                            <paper-button class="default">Create</paper-button>
+                        </div>
+                    </div>
+                </paper-card>
+            </div>
+        </div>
+    </template>
+
+    <script>
+
+        Polymer({
+            is: 'page-login'
+        });
+    </script>
+</dom-module>

@@ -15,11 +15,11 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview",
+    "polymer": "Polymer/polymer#^1.7.1",
     "paper-elements": "PolymerElements/paper-elements#^1.0.7"
   },
   "resolutions": {
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1"
+    "polymer": "^1.7.1",
+    "webcomponentsjs": "^0.7.20"
   }
 }

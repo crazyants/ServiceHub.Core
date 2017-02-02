@@ -248,6 +248,12 @@ namespace Mp.Sh.Core.License.Controllers
             return View(vm);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> LoginPolymer()
+        {
+            return View();
+        }
+
         #endregion Public Methods
     }
 }
