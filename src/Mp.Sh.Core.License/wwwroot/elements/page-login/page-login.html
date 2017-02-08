@@ -1,14 +1,20 @@
-﻿<link rel="import" href="../../bower_components/polymer/polymer.html" />
+﻿<!-- Polymer Core -->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<!-- Iron elements -->
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="../../bower_components/iron-form/iron-form.html" />
+
+<!-- Paper elements -->
 <link rel="import" href="../../bower_components/paper-card/paper-card.html" />
 <link rel="import" href="../../bower_components/paper-button/paper-button.html" />
 <link rel="import" href="../../bower_components/paper-input/paper-input.html" />
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html" />
 <link rel="import" href="../../bower_components/paper-button/paper-button.html" />
-<link rel="import" href="../../bower_components/iron-image/iron-image.html" />
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html" />
-<link rel="import" href="../paper-icon/social-icon.html" />
 
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html" />
+<!-- Custom elements -->
+<link rel="import" href="../paper-icon/social-icon.html" />
 <link rel="import" href="../paper-theme/paper-theme.html" />
 
 <dom-module id="page-login">
@@ -25,11 +31,10 @@
 
             .sign-in {
                 width: 160px;
-                margin: 10px 0;
             }
 
             .separator-container {
-                margin: 10px 0;
+                margin-top: 10px;
             }
 
             .separator {
@@ -42,23 +47,28 @@
             }
 
             paper-icon-button {
-                width: 65px;
-                height: 65px;
+                width: 50px;
+                height: 50px;
+                margin: 0 10px;
             }
 
-            .facebook {
+            .OpenIdConnect {
+                color: #EE820F;
+            }
+
+            .Facebook {
                 color: #6D84B4;
             }
 
-            .google {
+            .Google {
                 color: #D34836;
             }
 
-            .twitter {
+            .Twitter {
                 color: #0084B4;
             }
 
-            .linkedin {
+            .LinkedIn {
                 color: #007BB5;
             }
 
@@ -70,37 +80,59 @@
         <div class="layout horizontal center-justified">
             <div class="layout vertical center-justified">
                 <paper-card image="../../img/login_header.png">
-                    <div class="card-content">
-                        <paper-input required
-                                     error-message="The Username can't be empty'"
-                                     label="USERNAME"></paper-input>
-                        <paper-input required
-                                     error-message="The Password can't be empty'"
-                                     type="password"
-                                     label="PASSWORD"></paper-input>
-                        <div class="layout horizontal center justified">
-                            <paper-checkbox>Remember Me</paper-checkbox>
-                            <paper-button class="default">Forgot</paper-button>
+
+                    <!-- Iron Form -->
+                    <form is="iron-form" id="form" method="post" action="/account/login" content-type="application/json">
+
+                        <!-- Normal authentication area -->
+                        <div class="card-content" hidden$="{{!enableLocal}}">
+                            <input type="hidden" name="ReturnUrl" value="{{redirectUrl}}" />
+                            <input type="hidden" name="RememberLogin" value="false" />
+                            <paper-input required
+                                         error-message="The Username can't be empty'"
+                                         name="Username"
+                                         label="USERNAME"></paper-input>
+                            <paper-input required
+                                         error-message="The Password can't be empty'"
+                                         name="Password"
+                                         type="password"
+                                         label="PASSWORD"></paper-input>
+                            <div class="layout horizontal center justified separator-container">
+                                <paper-checkbox hidden$="{{!allowRemember}}" name="RememberLogin">Remember Me</paper-checkbox>
+                                <paper-button class="default">Forgot</paper-button>
+                            </div>
+                            <div class="layout horizontal center-justified separator-container">
+                                <paper-button raised class="indigo sign-in" on-tap="_signIn">Sign In</paper-button>
+                            </div>
                         </div>
-                        <div class="layout horizontal center-justified">
-                            <paper-button raised class="indigo sign-in">Sign In</paper-button>
+                        <!-- End -->
+                        <!-- Social Login -->
+                        <div class="card-content">
+                            <div class="layout horizontal center around-justified separator-container">
+                                <span class="separator"></span>
+                                <span class="separator-text">OR</span>
+                                <span class="separator"></span>
+                            </div>
+                            <div class="layout horizontal center center-justified separator-container">
+                                <template is="dom-repeat" items="{{externalProviders}}" as="provider">
+                                    <paper-icon-button class$="{{provider.AuthenticationScheme}}"
+                                                       icon="social:{{provider.AuthenticationScheme}}"
+                                                       data-args="{{provider.AuthenticationScheme}}"
+                                                       on-tap="_externalLogin"></paper-icon-button>
+                                </template>
+                            </div>
                         </div>
-                        <div class="layout horizontal center around-justified separator-container">
-                            <span class="separator"></span>
-                            <span class="separator-text">OR</span>
-                            <span class="separator"></span>
+                        <!-- End -->
+                        <!-- Footer -->
+                        <div class="card-content">
+                            <div class="layout horizontal center justified footer">
+                                <span class="separator-text">Don't you have an account?</span>
+                                <paper-button class="default">Create</paper-button>
+                            </div>
                         </div>
-                        <div class="layout horizontal center around-justified">
-                            <paper-icon-button class="facebook" icon="social:facebook"></paper-icon-button>
-                            <paper-icon-button class="google" icon="social:google"></paper-icon-button>
-                            <paper-icon-button class="twitter" icon="social:twitter"></paper-icon-button>
-                            <paper-icon-button class="linkedin" icon="social:linkedin"></paper-icon-button>
-                        </div>
-                        <div class="layout horizontal center justified footer">
-                            <span class="separator-text">Don't you have an account?</span>
-                            <paper-button class="default">Create</paper-button>
-                        </div>
-                    </div>
+                        <!-- End -->
+                    </form>
+                    <!-- End -->
                 </paper-card>
             </div>
         </div>
@@ -108,8 +140,95 @@
 
     <script>
 
+        /**
+        * <page-login> provide a dynamic form to submit a login request
+        * using the /Token endpoint
+        */
         Polymer({
-            is: 'page-login'
+            /** The id of the element */
+            is: 'page-login',
+
+            /** The properties of the element*/
+            properties: {
+
+                /**
+                * The Redirect Url provided by the caller
+                * it can be injected using redirect-url attribute
+                */
+                redirectUrl: {
+                    type: String,
+                    value: '',
+                    reflectToAttribute: true
+                },
+
+                /**
+                * True if the Local Login form is enabled in this scenario
+                */
+                enableLocal: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                },
+
+                /**
+                * True if the login can be stored in the browser for the future
+                */
+                allowRemember: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                },
+
+                /**
+                * External Providers available for this login instance
+                */
+                externalProviders: {
+                    type: Array,
+                    value: [],
+                    reflectToAttribute: true
+                },
+
+                /**
+                * If Google login is enabled this object is present
+                */
+                googleSignin: {
+                    type: Object,
+                    value: {}
+                }
+            },
+
+            /**
+            * Triggered when the DOM element is loaded
+            * the first time
+            */
+            ready: function () {
+                var form = this.$.form;
+                var me = this;
+                form.addEventListener('iron-form-response', function (event) {
+                    if (me.redirectUrl === '') {
+                        location.href = '/';
+                    } else {
+                        location.href = me.redirectUrl;
+                    }
+                });
+
+            },
+
+            /**
+            * Triggered when one external login is "tapped"
+            */
+            _externalLogin: function (e) {
+                var args = e.model.get('provider.AuthenticationScheme');
+                // console.log(args);
+                location.href = '/Account/ExternalLogin?provider=' + args + '&returnUrl=' + this.redirectUrl;
+            },
+
+            /**
+            * Validate and submit the Login form
+            */
+            _signIn: function () {
+                this.$.form.submit();
+            }
         });
     </script>
 </dom-module>

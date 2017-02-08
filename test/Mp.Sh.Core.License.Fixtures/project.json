@@ -8,8 +8,13 @@
     "NETStandard.Library": "1.6.1",
     "Mp.Sh.Core.License": "1.0.0-*",
     "Microsoft.AspNetCore.TestHost": "1.1.0",
-    "FluentAssertions": "4.18.0",
-    "Microsoft.DotNet.InternalAbstractions": "1.0.1-beta-003206"
+    "FluentAssertions": "4.19.0",
+    "Microsoft.DotNet.InternalAbstractions": "1.0.1-beta-003206",
+    "Moq": "4.6.38-alpha"
+  },
+
+  "tools": {
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
   },
 
   "frameworks": {
@@ -25,7 +30,7 @@
 
   "buildOptions": {
     "copyToOutput": {
-      "include": [ "xunit.runner.json" ]
+      "include": [ "xunit.runner.json", "hosting.json" ]
     }
   }
 }

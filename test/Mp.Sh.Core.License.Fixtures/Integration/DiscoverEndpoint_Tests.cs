@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.License.Fixtures.Integration
 {
-    public class DiscoverEndpoint : IDisposable
+    public class DiscoverEndpoint_Tests : IDisposable
     {
         #region Private Fields
 
@@ -31,7 +31,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
 
         #region Public Constructors
 
-        public DiscoverEndpoint(ITestOutputHelper output)
+        public DiscoverEndpoint_Tests(ITestOutputHelper output)
         {
             this.output = output;
             var builder = new WebHostBuilder().UseStartup<Startup>();
@@ -45,6 +45,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
         #region Public Methods
 
         [Fact]
+        [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_GrantClientToken_ForAdminClient()
         {
             var content = new FormUrlEncodedContent(
@@ -62,6 +63,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
         }
 
         [Fact]
+        [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_GrantClientToken_ForODataClient()
         {
             var content = new FormUrlEncodedContent(
@@ -79,6 +81,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
         }
 
         [Fact]
+        [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_GrantUserToken_WithUserClient()
         {
             var content = new FormUrlEncodedContent(
@@ -98,6 +101,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
         }
 
         [Fact]
+        [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_Returns_200()
         {
             var response = await client.GetAsync("/.well-known/openid-configuration");
@@ -109,6 +113,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
         }
 
         [Fact]
+        [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_Returns_ValidJson()
         {
             var response = await client.GetAsync("/.well-known/openid-configuration");
@@ -123,6 +128,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
         }
 
         [Fact]
+        [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_ShouldNot_GrantUserToken_WithoutUserClient()
         {
             var content = new FormUrlEncodedContent(

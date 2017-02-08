@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Mp.Sh.Core.License.Controllers
+namespace IdentityServer4.Quickstart.UI
 {
     /// <summary>
     /// This sample controller implements a typical login/logout/provision workflow for local and
@@ -206,8 +206,8 @@ namespace Mp.Sh.Core.License.Controllers
         /// Handle postback from username/password login 
         /// </summary>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginInputModel model)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login([FromBody] LoginInputModel model)
         {
             if (ModelState.IsValid)
             {
@@ -248,10 +248,52 @@ namespace Mp.Sh.Core.License.Controllers
             return View(vm);
         }
 
+        /// <summary>
+        /// Show logout page 
+        /// </summary>
         [HttpGet]
-        public async Task<IActionResult> LoginPolymer()
+        public async Task<IActionResult> Logout(string logoutId)
         {
-            return View();
+            var vm = await _account.BuildLogoutViewModelAsync(logoutId);
+
+            if (vm.ShowLogoutPrompt == false)
+            {
+                // no need to show prompt
+                return await Logout(vm);
+            }
+
+            return View(vm);
+        }
+
+        /// <summary>
+        /// Handle logout page postback 
+        /// </summary>
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout(LogoutInputModel model)
+        {
+            var vm = await _account.BuildLoggedOutViewModelAsync(model.LogoutId);
+            if (vm.TriggerExternalSignout)
+            {
+                string url = Url.Action("Logout", new { logoutId = vm.LogoutId });
+                try
+                {
+                    // hack: try/catch to handle social providers that throw
+                    await HttpContext.Authentication.SignOutAsync(vm.ExternalAuthenticationScheme,
+                        new AuthenticationProperties { RedirectUri = url });
+                }
+                catch (NotSupportedException) // this is for the external providers that don't have signout
+                {
+                }
+                catch (InvalidOperationException) // this is for Windows/Negotiate
+                {
+                }
+            }
+
+            // delete local authentication cookie
+            await HttpContext.Authentication.SignOutAsync();
+
+            return View("LoggedOut", vm);
         }
 
         #endregion Public Methods

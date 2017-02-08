@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.OData.Fixtures.Integration
 {
-    public class PersonsEndpoint : IDisposable
+    public class PersonsEndpoint_Tests : IDisposable
     {
         #region Private Fields
 
@@ -33,7 +34,7 @@ namespace Mp.Sh.Core.OData.Fixtures.Integration
 
         #region Public Constructors
 
-        public PersonsEndpoint(ITestOutputHelper output)
+        public PersonsEndpoint_Tests(ITestOutputHelper output)
         {
             this.output = output;
             var apiBuilder = new WebHostBuilder()
@@ -62,6 +63,7 @@ namespace Mp.Sh.Core.OData.Fixtures.Integration
         }
 
         [Fact]
+        [Trait("Category", "Person")]
         public async void PersonsEndpoint_Authenticated_WithClientCode_Returns_200()
         {
             var token = GetClientToken();
@@ -75,6 +77,7 @@ namespace Mp.Sh.Core.OData.Fixtures.Integration
         }
 
         [Fact]
+        [Trait("Category", "Person")]
         public async void PersonsEndpoint_Authenticated_WithUser_Returns_200()
         {
             var token = GetUserToken();
@@ -88,6 +91,7 @@ namespace Mp.Sh.Core.OData.Fixtures.Integration
         }
 
         [Fact]
+        [Trait("Category", "Person")]
         public async void PersonsEndpoint_NotAuthenticated_Returns_401()
         {
             var response = await apiClient.GetAsync("/persons");

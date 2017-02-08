@@ -98,13 +98,16 @@ namespace Mp.Sh.Core.License.Services
             var schemes = _httpContextAccessor.HttpContext.Authentication.GetAuthenticationSchemes();
 
             var providers = schemes
-                .Where(x => x.DisplayName != null && !AccountOptions.WindowsAuthenticationSchemes.Contains(x.AuthenticationScheme))
+                .Where(x => x.DisplayName != null
+                && x.DisplayName.ToLower() != "negotiate"
+                && !AccountOptions.WindowsAuthenticationSchemes.Contains(x.AuthenticationScheme))
                 .Select(x => new ExternalProvider
                 {
                     DisplayName = x.DisplayName,
                     AuthenticationScheme = x.AuthenticationScheme
                 }).ToList();
 
+            /*
             if (AccountOptions.WindowsAuthenticationEnabled)
             {
                 // this is needed to handle windows auth schemes
@@ -118,7 +121,7 @@ namespace Mp.Sh.Core.License.Services
                     });
                 }
             }
-
+            */
             var allowLocal = true;
             if (context?.ClientId != null)
             {

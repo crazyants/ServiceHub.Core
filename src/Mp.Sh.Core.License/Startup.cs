@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace Mp.Sh.Core.License
 {
@@ -29,9 +29,9 @@ namespace Mp.Sh.Core.License
             var builder = new ConfigurationBuilder()
                             .SetBasePath(env.ContentRootPath)
                             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                            .AddEnvironmentVariables();
 
-            builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
 
@@ -54,9 +54,10 @@ namespace Mp.Sh.Core.License
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseDeveloperExceptionPage();
+
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
             }
 
             app.UseIdentityServer(); // inform that this is an identity server
@@ -66,7 +67,35 @@ namespace Mp.Sh.Core.License
             {
                 AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
                 AutomaticAuthenticate = false,
-                AutomaticChallenge = false
+                AutomaticChallenge = true,
+                LoginPath = "/Account/Login"
+            });
+
+            // middleware for linkedin authentication
+            app.UseLinkedInAuthentication(new LinkedInOptions
+            {
+                AuthenticationScheme = "LinkedIn",
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                ClientId = "75sjisj8h5uj9t",
+                ClientSecret = "Fnm7BtgJn0pM9oLR"
+            });
+
+            // middleware for facebook authentication
+            app.UseFacebookAuthentication(new FacebookOptions
+            {
+                AuthenticationScheme = "Facebook",
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                AppId = "2031068163786332",
+                AppSecret = "7cb47bee7ce8d9789389a34795f17a0c"
+            });
+
+            // middleware for twitter authentication
+            app.UseTwitterAuthentication(new TwitterOptions
+            {
+                AuthenticationScheme = "Twitter",
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                ConsumerKey = "aYQw0HeXceMtCuuuH4qlL4LNi",
+                ConsumerSecret = "JieZI9HTNDJNbI4OEZbNolnBHtD6aywqtN22WhqQk9VZyUYXlR",
             });
 
             // middleware for google authentication
@@ -78,23 +107,6 @@ namespace Mp.Sh.Core.License
                 ClientSecret = "wdfPY6t8H8cecgjlxud__4Gh"
             });
 
-            // middleware for external openid connect authentication
-            app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
-            {
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                SignOutScheme = IdentityServerConstants.SignoutScheme,
-
-                DisplayName = "OpenID Connect",
-                Authority = "https://demo.identityserver.io/",
-                ClientId = "implicit",
-
-                TokenValidationParameters = new TokenValidationParameters
-                {
-                    NameClaimType = "name",
-                    RoleClaimType = "role"
-                }
-            });
-
             app.UseStaticFiles(); // configure static
             app.UseMvcWithDefaultRoute(); //  and mvc framework
         }
@@ -102,8 +114,13 @@ namespace Mp.Sh.Core.License
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(); // [asp.net core mvc]
-
+            // [asp.net core mvc]
+            services
+                .AddMvc()
+                .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                });
             // add identity server functionalities
             services
                 .AddIdentityServer()
