@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -209,6 +210,8 @@ namespace IdentityServer4.Quickstart.UI
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody] LoginInputModel model)
         {
+            await Task.Delay(1000);
+
             if (ModelState.IsValid)
             {
                 // validate username/password against in-memory store
@@ -234,18 +237,18 @@ namespace IdentityServer4.Quickstart.UI
                     // authorize endpoint
                     if (_interaction.IsValidReturnUrl(model.ReturnUrl))
                     {
-                        return Redirect(model.ReturnUrl);
+                        return Json(model.ReturnUrl);
                     }
 
-                    return Redirect("~/");
+                    return Json("/");
                 }
 
                 ModelState.AddModelError("", AccountOptions.InvalidCredentialsErrorMessage);
             }
 
-            // something went wrong, show form with error
-            var vm = await _account.BuildLoginViewModelAsync(model);
-            return View(vm);
+            // something went wrong, send back errors
+            //var vm = await _account.BuildLoginViewModelAsync(model);
+            return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
         }
 
         /// <summary>

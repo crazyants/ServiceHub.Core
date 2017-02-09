@@ -4,6 +4,7 @@
 <!-- Iron elements -->
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html" />
 <link rel="import" href="../../bower_components/iron-form/iron-form.html" />
+<link rel="import" href="../../bower_components/iron-a11y-keys/iron-a11y-keys.html" />
 
 <!-- Paper elements -->
 <link rel="import" href="../../bower_components/paper-card/paper-card.html" />
@@ -13,6 +14,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html" />
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html" />
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html" />
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html" />
 
 <!-- Custom elements -->
 <link rel="import" href="../paper-icon/social-icon.html" />
@@ -22,7 +24,6 @@
     <template>
 
         <style include="iron-flex iron-flex-alignment paper-theme">
-
             paper-progress {
                 width: 350px;
             }
@@ -93,9 +94,14 @@
             }
         </style>
 
+        <iron-a11y-keys target="[[_target]]" keys="enter" on-keys-pressed="_signIn">
+        </iron-a11y-keys>
+
         <div class="layout vertical center-justified full-height">
-            <paper-progress indeterminate class="self-center"></paper-progress>
-            <paper-card class="self-center">
+            <paper-progress indeterminate class="self-center" id="progress" disabled></paper-progress>
+
+            <paper-card class="self-center" id="loginCard">
+
                 <div class="layout horizontal center-justified">
                     <img src="../../img/SH-RGB-500.png" height="100" width="100" alt="Service Hub Logo" />
                 </div>
@@ -108,6 +114,7 @@
                         <input type="hidden" name="RememberLogin" value="false" />
                         <paper-input required
                                      auto-validate
+                                     autofocus
                                      no-label-float
                                      error-message="The Username can't be empty'"
                                      name="Username"
@@ -154,11 +161,13 @@
                 </form>
                 <!-- End -->
             </paper-card>
+
             <div class="footer self-center">
                 <span>More information about our <a href="#">Privacy</a> and <a href="#">Terms of Usage</a>.</span>
             </div>
-        </div>
 
+            <paper-toast id="messages" class="fit-bottom"></paper-toast>
+        </div>
     </template>
 
     <script>
@@ -226,16 +235,45 @@
             */
             ready: function () {
 
+                /* set the target of the Message Toast */
+                this.$.messages.fitInto = this.$.loginCard;
+
+                /* set some references */
                 var form = this.$.form;
                 var me = this;
-                form.addEventListener('iron-form-response', function (event) {
-                    if (me.redirectUrl === '') {
-                        location.href = '/';
-                    } else {
-                        location.href = me.redirectUrl;
-                    }
+
+                /**
+                * Triggered when the form is pre submitted
+                */
+                form.addEventListener('iron-form-presubmit', function (event) {
+                    me.$.progress.disabled = false;
                 });
 
+                /**
+                * Triggered when the form is returning with 200
+                */
+                form.addEventListener('iron-form-response', function (event) {
+                    me.$.progress.disabled = true;
+                    location.href = event.detail.response;
+                });
+
+                /**
+                * Triggered when the form returns any HTTP error
+                */
+                form.addEventListener('iron-form-error', function (event) {
+                    me.$.progress.disabled = true;
+                    me.$.messages.text = event.detail.request.response[0].errorMessage;
+                    me.$.messages.open();
+                });
+
+                /**
+                * Triggered when the form has invalid data
+                */
+                form.addEventListener('iron-form-invalid', function (event) {
+                    me.$.progress.disabled = true;
+                    me.$.messages.text = 'Please check, there are some errors';
+                    me.$.messages.open();
+                });
             },
 
             /**
