@@ -5,16 +5,34 @@
         <style>
             :root {
                 /* Label and underline color when the input is not focused */
-                --paper-input-container-color: #BDBDBD;
+                --paper-input-container-color: var(--disabled-text-color);
                 /* Label and underline color when the input is focused */
-                --paper-input-container-focus-color: #64DD17;
+                --paper-input-container-focus-color: var(--paper-light-green-a700);
                 /* Label and underline color when the input is invalid */
-                --paper-input-container-invalid-color: red;
+                --paper-input-container-invalid-color: var(--error-color);
                 /* Input foreground color */
                 --paper-input-container-input-color: black;
 
-                --paper-checkbox-unchecked-color: #BDBDBD;
-                --paper-checkbox-label-color: #BDBDBD;
+                /* checkbox label and square unchecked*/
+                --paper-checkbox-unchecked-color: var(--secondary-text-color);
+                --paper-checkbox-label-color: var(--secondary-text-color);
+
+                /* progress bar color */
+                --paper-progress-active-color: var(--paper-light-green-a700);
+
+            }
+
+            div.full-height{
+                height:100%;
+            }
+
+            a {
+                color: var(--paper-indigo-500);
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
             }
 
             paper-button.default{

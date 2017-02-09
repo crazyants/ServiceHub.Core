@@ -12,6 +12,7 @@
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html" />
 <link rel="import" href="../../bower_components/paper-button/paper-button.html" />
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html" />
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html" />
 
 <!-- Custom elements -->
 <link rel="import" href="../paper-icon/social-icon.html" />
@@ -21,36 +22,49 @@
     <template>
 
         <style include="iron-flex iron-flex-alignment paper-theme">
-            .card-content {
-                margin: 0 10px;
+
+            paper-progress {
+                width: 350px;
             }
 
-            div:first-of-type {
-                height: 100%;
+            paper-card {
+                width: 350px;
+            }
+
+            img {
+                margin-top: 20px;
+            }
+
+            .card-content {
+                padding-top: 10px !important;
+                padding-bottom: 10px !important;
+            }
+
+            paper-input {
+                margin: 10px 0;
             }
 
             .sign-in {
                 width: 160px;
             }
 
-            .separator-container {
-                margin-top: 10px;
-            }
-
             .separator {
-                width: 50px;
-                border-bottom: 1px solid #BDBDBD;
+                width: 130px;
+                border-bottom: 1px solid var(--divider-color);
             }
 
             .separator-text {
-                color: #BDBDBD;
+                color: var(--disabled-text-color);
             }
 
             paper-icon-button {
-                width: 50px;
-                height: 50px;
                 margin: 0 10px;
             }
+
+                paper-icon-button::shadow #icon {
+                    width: 50px;
+                    height: 50px;
+                }
 
             .OpenIdConnect {
                 color: #EE820F;
@@ -73,69 +87,78 @@
             }
 
             .footer {
-                margin-top: 45px;
+                color: var(--disabled-text-color);
+                width: 350px;
+                margin-top: 20px;
             }
         </style>
 
-        <div class="layout horizontal center-justified">
-            <div class="layout vertical center-justified">
-                <paper-card image="../../img/login_header.png">
+        <div class="layout vertical center-justified full-height">
+            <paper-progress indeterminate class="self-center"></paper-progress>
+            <paper-card class="self-center">
+                <div class="layout horizontal center-justified">
+                    <img src="../../img/SH-RGB-500.png" height="100" width="100" alt="Service Hub Logo" />
+                </div>
+                <!-- Iron Form -->
+                <form is="iron-form" id="form" method="post" action="/account/login" content-type="application/json">
 
-                    <!-- Iron Form -->
-                    <form is="iron-form" id="form" method="post" action="/account/login" content-type="application/json">
-
-                        <!-- Normal authentication area -->
-                        <div class="card-content" hidden$="{{!enableLocal}}">
-                            <input type="hidden" name="ReturnUrl" value="{{redirectUrl}}" />
-                            <input type="hidden" name="RememberLogin" value="false" />
-                            <paper-input required
-                                         error-message="The Username can't be empty'"
-                                         name="Username"
-                                         label="USERNAME"></paper-input>
-                            <paper-input required
-                                         error-message="The Password can't be empty'"
-                                         name="Password"
-                                         type="password"
-                                         label="PASSWORD"></paper-input>
-                            <div class="layout horizontal center justified separator-container">
-                                <paper-checkbox hidden$="{{!allowRemember}}" name="RememberLogin">Remember Me</paper-checkbox>
-                                <paper-button class="default">Forgot</paper-button>
-                            </div>
-                            <div class="layout horizontal center-justified separator-container">
-                                <paper-button raised class="indigo sign-in" on-tap="_signIn">Sign In</paper-button>
-                            </div>
+                    <!-- Normal authentication area -->
+                    <div class="card-content" hidden$="{{!enableLocal}}">
+                        <input type="hidden" name="ReturnUrl" value="{{redirectUrl}}" />
+                        <input type="hidden" name="RememberLogin" value="false" />
+                        <paper-input required
+                                     auto-validate
+                                     no-label-float
+                                     error-message="The Username can't be empty'"
+                                     name="Username"
+                                     label="Username"></paper-input>
+                        <paper-input required
+                                     auto-validate
+                                     no-label-float
+                                     error-message="The Password can't be empty'"
+                                     name="Password"
+                                     type="password"
+                                     label="Password">
+                            <paper-button class="default" suffix>Forgot</paper-button>
+                        </paper-input>
+                        <div class="layout horizontal center-justified" style="margin-top:20px">
+                            <paper-button raised class="indigo sign-in" on-tap="_signIn">Sign In</paper-button>
                         </div>
-                        <!-- End -->
-                        <!-- Social Login -->
-                        <div class="card-content">
-                            <div class="layout horizontal center around-justified separator-container">
-                                <span class="separator"></span>
-                                <span class="separator-text">OR</span>
-                                <span class="separator"></span>
-                            </div>
-                            <div class="layout horizontal center center-justified separator-container">
-                                <template is="dom-repeat" items="{{externalProviders}}" as="provider">
-                                    <paper-icon-button class$="{{provider.AuthenticationScheme}}"
-                                                       icon="social:{{provider.AuthenticationScheme}}"
-                                                       data-args="{{provider.AuthenticationScheme}}"
-                                                       on-tap="_externalLogin"></paper-icon-button>
-                                </template>
-                            </div>
-                        </div>
-                        <!-- End -->
-                        <!-- Footer -->
-                        <div class="card-content">
-                            <div class="layout horizontal center justified footer">
-                                <span class="separator-text">Don't you have an account?</span>
-                                <paper-button class="default">Create</paper-button>
-                            </div>
-                        </div>
-                        <!-- End -->
-                    </form>
+                    </div>
                     <!-- End -->
-                </paper-card>
+                    <!-- Social Login -->
+                    <div class="card-content">
+                        <div class="layout horizontal center around-justified">
+                            <span class="separator"></span>
+                            <span class="separator-text">OR</span>
+                            <span class="separator"></span>
+                        </div>
+                        <div class="layout horizontal center center-justified" style="margin-top:20px">
+                            <template is="dom-repeat" items="{{externalProviders}}" as="provider">
+                                <paper-icon-button class$="{{provider.AuthenticationScheme}}"
+                                                   icon="social:{{provider.AuthenticationScheme}}"
+                                                   data-args="{{provider.AuthenticationScheme}}"
+                                                   on-tap="_externalLogin"></paper-icon-button>
+                            </template>
+                        </div>
+                    </div>
+                    <!-- End -->
+                    <!-- Footer -->
+                    <div class="card-content">
+                        <div class="layout horizontal center justified">
+                            <span class="separator-text">Don't you have an account?</span>
+                            <paper-button class="default">Create</paper-button>
+                        </div>
+                    </div>
+                    <!-- End -->
+                </form>
+                <!-- End -->
+            </paper-card>
+            <div class="footer self-center">
+                <span>More information about our <a href="#">Privacy</a> and <a href="#">Terms of Usage</a>.</span>
             </div>
         </div>
+
     </template>
 
     <script>
@@ -202,6 +225,7 @@
             * the first time
             */
             ready: function () {
+
                 var form = this.$.form;
                 var me = this;
                 form.addEventListener('iron-form-response', function (event) {
