@@ -105,7 +105,8 @@ namespace Mp.Sh.Core.License.Services
                 {
                     DisplayName = x.DisplayName,
                     AuthenticationScheme = x.AuthenticationScheme
-                }).ToList();
+                })
+                .OrderBy(x => x.DisplayName).ToList();
 
             /*
             if (AccountOptions.WindowsAuthenticationEnabled)

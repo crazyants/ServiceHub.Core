@@ -2,10 +2,7 @@
     Layout = "_LayoutEmpty";
 }
 @model LoginViewModel
-
-<link rel="import" href="~/elements/page-login/page-login.html" />
-
-@Html.Partial("_ValidationSummary")
+<link rel="import" href="/elements/page-login/page-login.html" />
 
 <page-login redirect-url="@Model.ReturnUrl"
             enable-local="@Model.EnableLocalLogin"

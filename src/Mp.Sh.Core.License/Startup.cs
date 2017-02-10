@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Mp.Sh.Core.AspNet.Configurations;
 using Newtonsoft.Json;
 
 namespace Mp.Sh.Core.License
@@ -54,13 +55,68 @@ namespace Mp.Sh.Core.License
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseDeveloperExceptionPage();
-
             if (env.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
             }
 
+            // inject a CSP header to allow dynamic content from Polymer
+            app.Use(async (ctx, next) =>
+            {
+                ctx.Response.Headers.Add("Content-Security-Policy",
+                                         "default-src 'self' * 'unsafe-inline' 'unsafe-eval' data:");
+                await next();
+            });
+
+            // bootstrap Indetity Server 4.0
             app.UseIdentityServer(); // inform that this is an identity server
+
+            foreach (var provider in Configuration.GetSection("SocialProviders").Get<SocialProviders>().Providers)
+            {
+                if (provider.Name.ToLower().Equals("twitter"))
+                {
+                    app.UseTwitterAuthentication(new TwitterOptions
+                    {
+                        AuthenticationScheme = "Twitter",
+                        SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                        ConsumerKey = provider.ClientKey,
+                        ConsumerSecret = provider.ClientId
+                    });
+                }
+
+                if (provider.Name.ToLower().Equals("facebook"))
+                {
+                    app.UseFacebookAuthentication(new FacebookOptions
+                    {
+                        AuthenticationScheme = "Facebook",
+                        SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                        AppId = provider.ClientKey,
+                        AppSecret = provider.ClientId
+                    });
+                }
+
+                if (provider.Name.ToLower().Equals("google"))
+                {
+                    app.UseGoogleAuthentication(new GoogleOptions
+                    {
+                        AuthenticationScheme = "Google",
+                        SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                        ClientId = provider.ClientId,
+                        ClientSecret = provider.ClientKey
+                    });
+                }
+
+                if (provider.Name.ToLower().Equals("linkedin"))
+                {
+                    app.UseLinkedInAuthentication(new LinkedInOptions
+                    {
+                        AuthenticationScheme = "LinkedIn",
+                        SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                        ClientId = provider.ClientId,
+                        ClientSecret = provider.ClientKey
+                    });
+                }
+            }
 
             // cookie middleware for temporarily storing the outcome of the external authentication
             app.UseCookieAuthentication(new CookieAuthenticationOptions
@@ -69,42 +125,6 @@ namespace Mp.Sh.Core.License
                 AutomaticAuthenticate = false,
                 AutomaticChallenge = true,
                 LoginPath = "/Account/Login"
-            });
-
-            // middleware for linkedin authentication
-            app.UseLinkedInAuthentication(new LinkedInOptions
-            {
-                AuthenticationScheme = "LinkedIn",
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ClientId = "75sjisj8h5uj9t",
-                ClientSecret = "Fnm7BtgJn0pM9oLR"
-            });
-
-            // middleware for facebook authentication
-            app.UseFacebookAuthentication(new FacebookOptions
-            {
-                AuthenticationScheme = "Facebook",
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                AppId = "2031068163786332",
-                AppSecret = "7cb47bee7ce8d9789389a34795f17a0c"
-            });
-
-            // middleware for twitter authentication
-            app.UseTwitterAuthentication(new TwitterOptions
-            {
-                AuthenticationScheme = "Twitter",
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ConsumerKey = "aYQw0HeXceMtCuuuH4qlL4LNi",
-                ConsumerSecret = "JieZI9HTNDJNbI4OEZbNolnBHtD6aywqtN22WhqQk9VZyUYXlR",
-            });
-
-            // middleware for google authentication
-            app.UseGoogleAuthentication(new GoogleOptions
-            {
-                AuthenticationScheme = "Google",
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ClientId = "708996912208-9m4dkjb5hscn7cjrn5u0r4tbgkbj1fko.apps.googleusercontent.com",
-                ClientSecret = "wdfPY6t8H8cecgjlxud__4Gh"
             });
 
             app.UseStaticFiles(); // configure static
