@@ -57,8 +57,10 @@ namespace Mp.Sh.Core.License
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                // disabled to show custom error page app.UseDeveloperExceptionPage();
             }
+
+            app.UseExceptionHandler("/Home/Error");
 
             // inject a CSP header to allow dynamic content from Polymer
             app.Use(async (ctx, next) =>

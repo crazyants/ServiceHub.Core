@@ -6,6 +6,7 @@ Copyright (c) Mproof B.V.
 Last Edit: Raffaele Garofalo
 \***************************************************************************/
 
+using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +49,10 @@ namespace Mp.Sh.Core.License.Controllers
             {
                 vm.Error = message;
             }
-
+            else
+            {
+                vm.Error = new ErrorMessage { Error = $"An error occurred with Status Code {HttpContext.Response.StatusCode}" };
+            }
             return View("Error", vm);
         }
 
