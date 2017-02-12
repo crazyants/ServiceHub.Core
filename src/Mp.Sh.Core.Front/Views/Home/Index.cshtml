@@ -1,15 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<h1>Welcome to Service Hub</h1>
-<h3>Home page, protected by authentication</h3>
-<p>Read below for more information:</p>
-<dl>
-    @foreach (var claim in User.Claims)
-    {
-        <dt>@claim.Type</dt>
-        <dd>@claim.Value</dd>
-    }
-</dl>
+﻿@using Microsoft.AspNetCore.Authentication
+@*@await ViewContext.HttpContext.Authentication.GetTokenAsync("access_token")
+@await ViewContext.HttpContext.Authentication.GetTokenAsync("refresh_token")*@
+
+<link rel="import" href="~/elements/app-shell/app-shell.html" />
+
+<app-shell user-profile="@JsonConvert.SerializeObject(User.Identity.Name)">
+</app-shell>

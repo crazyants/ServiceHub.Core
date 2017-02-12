@@ -1,0 +1,59 @@
+﻿<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<dom-module id="paper-theme">
+    <template>
+        <style>
+            :root {
+                /* Label and underline color when the input is not focused */
+                --paper-input-container-color: var(--disabled-text-color);
+                /* Label and underline color when the input is focused */
+                --paper-input-container-focus-color: var(--paper-light-green-a700);
+                /* Label and underline color when the input is invalid */
+                --paper-input-container-invalid-color: var(--error-color);
+                /* Input foreground color */
+                --paper-input-container-input-color: black;
+
+                /* checkbox label and square unchecked*/
+                --paper-checkbox-unchecked-color: var(--secondary-text-color);
+                --paper-checkbox-label-color: var(--secondary-text-color);
+
+                /* progress bar color */
+                --paper-progress-active-color: var(--paper-light-green-a700);
+
+                /* toolbar */
+                --paper-toolbar-background: var(--paper-indigo-500);
+            }
+
+            div.full-height{
+                height:100%;
+            }
+            div.full-width{
+                width:100%;
+            }
+
+            a {
+                color: var(--paper-indigo-500);
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            paper-button.default{
+                color: var(--paper-indigo-500);
+            }
+
+            paper-button.indigo{
+                background-color: var(--paper-indigo-500);
+                color: white;
+            }
+
+        </style>
+    </template>
+    <script>
+        Polymer({
+            is: 'paper-theme'
+        });
+    </script>
+</dom-module>

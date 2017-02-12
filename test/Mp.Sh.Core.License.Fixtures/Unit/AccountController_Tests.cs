@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Mp.Sh.Core.License.Models;
+using Mp.Sh.Core.License.Services;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace Mp.Sh.Core.License.Fixtures.Unit
             mockInteraction = new Mock<IIdentityServerInteractionService>();
             mockClientStore = new Mock<IClientStore>();
             mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
-            userStore = new TestUserStore(Config.GetUsers());
+            userStore = new TestUserStore(ConfigurationMockService.GetUsers());
             accountController = new AccountController(
                 mockInteraction.Object,
                 mockClientStore.Object,

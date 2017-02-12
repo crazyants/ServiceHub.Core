@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Mp.Sh.Core.Front
@@ -59,6 +60,14 @@ namespace Mp.Sh.Core.Front
                 app.UseDeveloperExceptionPage();
             }
 
+            // inject a CSP header to allow dynamic content from Polymer
+            app.Use(async (ctx, next) =>
+            {
+                ctx.Response.Headers.Add("Content-Security-Policy",
+                                         "default-src 'self' * 'unsafe-inline' 'unsafe-eval' data:");
+                await next();
+            });
+
             /* enable cookies authentication */
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
@@ -77,7 +86,11 @@ namespace Mp.Sh.Core.Front
                 Authority = "http://localhost:83",
                 RequireHttpsMetadata = false,
 
-                ClientId = "mvc_client",
+                ClientId = "mvc_client", // it requires ClientID
+                ClientSecret = "secret", // and Client Secret used also in backend
+                ResponseType = "code id_token",
+                Scope = { "odata", "offline_access" }, // allow odata and refresh
+                GetClaimsFromUserInfoEndpoint = true,
                 SaveTokens = true
             });
 
@@ -89,7 +102,13 @@ namespace Mp.Sh.Core.Front
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(); // [asp.net core mvc]
+            services
+                .AddMvc()
+                .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                }); // [asp.net core mvc]
         }
 
         #endregion Public Methods

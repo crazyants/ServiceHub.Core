@@ -1,0 +1,43 @@
+﻿<!-- Polymer -->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<!-- Iron elements -->
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html" />
+
+<!-- Paper elements -->
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html" />
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html" />
+
+<!-- Custom elements -->
+<link rel="import" href="../paper-theme/paper-theme.html" />
+
+<dom-module id="app-toolbar">
+    <template>
+        <style include="paper-theme">
+        </style>
+
+        <paper-toolbar>
+            <paper-icon-button icon="menu"></paper-icon-button>
+            <div class="title">{{title}}</div>
+            <paper-icon-button icon="search"></paper-icon-button>
+            <paper-icon-button icon="more-vert"></paper-icon-button>
+        </paper-toolbar>
+    </template>
+
+    <script>
+        /**
+        * <app-toolbar> Represents the main application Toolbar element
+        * it can loads 'actions' on demand and it listen to events
+        */
+        Polymer({
+            is: 'app-toolbar',
+
+            properties: {
+                title: {
+                    type: String,
+                    value: 'Dashboard'
+                }
+            }
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,55 @@
+﻿<!-- Polymer -->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<!-- Paper elements -->
+<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html" />
+
+<!-- Elements -->
+<link rel="import" href="../app-toolbar/app-toolbar.html" />
+<link rel="import" href="../app-toolbar/app-profiletoolbar.html" />
+<link rel="import" href="../badge-profile/badge-profile.html" />
+
+<!-- Custom elements -->
+<link rel="import" href="../paper-theme/paper-theme.html" />
+
+<dom-module id="app-shell">
+    <template>
+        <style include="paper-theme">
+
+        </style>
+
+        <paper-drawer-panel>
+            <paper-header-panel drawer>
+                <app-profiletoolbar></app-profiletoolbar>
+                <div>
+                    <badge-profile></badge-profile>
+                    <!-- Navigation -->
+                </div>
+            </paper-header-panel>
+            <paper-header-panel main>
+                <app-toolbar></app-toolbar>
+                <!-- Main content -->
+            </paper-header-panel>
+        </paper-drawer-panel>
+
+    </template>
+
+    <script>
+        /**
+        * <app-shell> Represents the main application scheleton
+        * it contains elements to draw the Toolbar, the Drawer, the Notification Center
+        */
+        Polymer({
+            is: 'app-shell',
+
+            properties: {
+                userProfile: {
+                    type: Object,
+                    value: [],
+                    reflectToAttribute: true
+                }
+            }
+        });
+
+    </script>
+</dom-module>

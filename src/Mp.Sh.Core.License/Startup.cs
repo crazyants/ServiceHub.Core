@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Mp.Sh.Core.AspNet.Configurations;
 using Newtonsoft.Json;
+using Mp.Sh.Core.License.Services;
 
 namespace Mp.Sh.Core.License
 {
@@ -73,50 +74,55 @@ namespace Mp.Sh.Core.License
             // bootstrap Indetity Server 4.0
             app.UseIdentityServer(); // inform that this is an identity server
 
-            foreach (var provider in Configuration.GetSection("SocialProviders").Get<SocialProviders>().Providers)
+            var socialProvidersSection = Configuration.GetSection("SocialProviders").Get<SocialProviders>();
+
+            if (socialProvidersSection != null)
             {
-                if (provider.Name.ToLower().Equals("twitter"))
+                foreach (var provider in socialProvidersSection.Providers)
                 {
-                    app.UseTwitterAuthentication(new TwitterOptions
+                    if (provider.Name.ToLower().Equals("twitter"))
                     {
-                        AuthenticationScheme = "Twitter",
-                        SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                        ConsumerKey = provider.ClientKey,
-                        ConsumerSecret = provider.ClientId
-                    });
-                }
+                        app.UseTwitterAuthentication(new TwitterOptions
+                        {
+                            AuthenticationScheme = "Twitter",
+                            SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                            ConsumerKey = provider.ClientKey,
+                            ConsumerSecret = provider.ClientId
+                        });
+                    }
 
-                if (provider.Name.ToLower().Equals("facebook"))
-                {
-                    app.UseFacebookAuthentication(new FacebookOptions
+                    if (provider.Name.ToLower().Equals("facebook"))
                     {
-                        AuthenticationScheme = "Facebook",
-                        SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                        AppId = provider.ClientKey,
-                        AppSecret = provider.ClientId
-                    });
-                }
+                        app.UseFacebookAuthentication(new FacebookOptions
+                        {
+                            AuthenticationScheme = "Facebook",
+                            SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                            AppId = provider.ClientKey,
+                            AppSecret = provider.ClientId
+                        });
+                    }
 
-                if (provider.Name.ToLower().Equals("google"))
-                {
-                    app.UseGoogleAuthentication(new GoogleOptions
+                    if (provider.Name.ToLower().Equals("google"))
                     {
-                        AuthenticationScheme = "Google",
-                        SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                        ClientId = provider.ClientId,
-                        ClientSecret = provider.ClientKey
-                    });
-                }
+                        app.UseGoogleAuthentication(new GoogleOptions
+                        {
+                            AuthenticationScheme = "Google",
+                            SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                            ClientId = provider.ClientId,
+                            ClientSecret = provider.ClientKey
+                        });
+                    }
 
-                if (provider.Name.ToLower().Equals("linkedin"))
-                {
-                    app.UseLinkedInAuthentication(new LinkedInOptions
+                    if (provider.Name.ToLower().Equals("linkedin"))
                     {
-                        AuthenticationScheme = "LinkedIn",
-                        SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                        ClientId = provider.ClientId,
-                        ClientSecret = provider.ClientKey
-                    });
+                        app.UseLinkedInAuthentication(new LinkedInOptions
+                        {
+                            AuthenticationScheme = "LinkedIn",
+                            SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                            ClientId = provider.ClientId,
+                            ClientSecret = provider.ClientKey
+                        });
+                    }
                 }
             }
 
@@ -142,15 +148,16 @@ namespace Mp.Sh.Core.License
                 .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
             // add identity server functionalities
             services
                 .AddIdentityServer()
                 .AddTemporarySigningCredential() // [temporary for development]
-                .AddInMemoryIdentityResources(Config.GetIdentityResources()) // [OIDC resources]
-                .AddInMemoryApiResources(Config.GetApiResources()) // apis to be protected
-                .AddInMemoryClients(Config.GetClients()) // clients available
-                .AddTestUsers(Config.GetUsers()); // users available
+                .AddInMemoryIdentityResources(ConfigurationMockService.GetIdentityResources()) // [OIDC resources]
+                .AddInMemoryApiResources(ConfigurationMockService.GetApiResources()) // apis to be protected
+                .AddInMemoryClients(ConfigurationMockService.GetClients()) // clients available
+                .AddTestUsers(ConfigurationMockService.GetUsers()); // users available
         }
 
         #endregion Public Methods

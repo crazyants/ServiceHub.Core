@@ -1,0 +1,55 @@
+﻿<!-- Polymer -->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<!-- Iron elements -->
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html" />
+<link rel="import" href="../../bower_components/iron-image/iron-image.html" />
+
+<!-- Paper elements -->
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html" />
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html" />
+
+<!-- Custom elements -->
+<link rel="import" href="../paper-theme/paper-theme.html" />
+
+<dom-module id="app-profiletoolbar">
+    <template>
+        <style include="paper-theme">
+            :root {
+                /* toolbar */
+                --paper-toolbar-background: white;
+                --paper-toolbar-color: black;
+            }
+            .logo{
+                width: 36px;
+                height: 36px;
+            }
+
+            .title {
+                margin-left: 20px !important;
+            }
+        </style>
+
+        <paper-toolbar>
+            <iron-image sizing="contain" class="logo" src="../../img/service-hub-logo-small.png"></iron-image>
+            <div class="title">{{title}}</div>
+        </paper-toolbar>
+    </template>
+
+    <script>
+        /**
+        * <app-toolbar> Represents the main application Toolbar element
+        * it can loads 'actions' on demand and it listen to events
+        */
+        Polymer({
+            is: 'app-profiletoolbar',
+
+            properties: {
+                title: {
+                    type: String,
+                    value: 'Service Hub'
+                }
+            }
+        });
+    </script>
+</dom-module>
