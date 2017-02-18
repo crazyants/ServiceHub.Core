@@ -3,6 +3,8 @@
 
 <!-- Iron elements -->
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="../../bower_components/iron-form/iron-form.html" />
+<link rel="import" href="../../bower_components/iron-a11y-keys/iron-a11y-keys.html" />
 
 <!-- Paper elements -->
 <link rel="import" href="../../bower_components/paper-card/paper-card.html" />
@@ -11,7 +13,7 @@
 <!-- Custom elements -->
 <link rel="import" href="../paper-theme/paper-theme.html" />
 
-<dom-module id="page-error">
+<dom-module id="page-logout-confirm">
     <template>
 
         <style include="iron-flex iron-flex-alignment paper-theme">
@@ -32,16 +34,16 @@
                 margin-bottom: 10px;
             }
 
-            .center-button{
-                width: 160px;
-            }
-
-            .header { 
+            .header {
                 -webkit-font-smoothing: antialiased;
                 font-size: 24px;
                 font-weight: 400;
                 letter-spacing: -.012em;
                 line-height: 32px;
+            }
+
+            .center-button{
+                width: 160px;
             }
 
             .footer {
@@ -52,24 +54,30 @@
             }
         </style>
 
+        <iron-a11y-keys target="[[_target]]" keys="enter" on-keys-pressed="_signOut">
+        </iron-a11y-keys>
+
         <div class="layout vertical center-justified full-height">
 
-            <paper-card class="self-center" id="errorCard">
+            <paper-card class="self-center" id="logoutConfirmCard">
 
-                <div class="layout horizontal center-justified">
-                    <img src="../../img/error-icon-128.png" height="100" width="100" alt="Error icon" />
-                </div>
-
-                <!-- Normal error area -->
-                <div class="card-content center-text">
-                    <div class="header">An error has occurred</div>
-                    <div class="content">{{errorMessage}}</div>
+                <form id="form" method="post" action="/account/logout" content-type="application/json">
                     <div class="layout horizontal center-justified">
-                        <paper-button raised class="indigo center-button" on-tap="_cancel">OK</paper-button>
+                        <img src="../../img/warning-icon-128.png" height="100" width="100" alt="Check Icon" />
                     </div>
-                </div>
-                <!-- End -->
 
+                    <!-- Normal error area -->
+                    <div class="card-content center-text">
+                        <div class="header">Do you want to sign out?</div>
+                        <div class="content">
+                            An application has requested you to be logged out.
+                        </div>
+                        <div class="layout horizontal center-justified">
+                            <paper-button raised class="indigo center-button" on-tap="_signOut">Sign Out</paper-button>
+                        </div>
+                    </div>
+                    <!-- End -->
+                </form>
             </paper-card>
 
             <div class="footer self-center">
@@ -85,15 +93,11 @@
         */
         Polymer({
             /** The id of the element */
-            is: 'page-error',
+            is: 'page-logout-confirm',
 
             /** The properties of the element*/
             properties: {
-                errorMessage: {
-                    type: String,
-                    value: '',
-                    reflectToAttribute: true
-                }
+
             },
 
             /**
@@ -101,16 +105,16 @@
             * the first time
             */
             ready: function () {
-
+                /* set some references */
+                var form = this.$.form;
             },
 
             /**
-            * Return to the Home Page and cancel the error
+            * Validate and submit the Login form
             */
-            _cancel: function () {
-                location.href = '/';
+            _signOut: function () {
+                this.$.form.submit();
             }
-
         });
     </script>
 </dom-module>

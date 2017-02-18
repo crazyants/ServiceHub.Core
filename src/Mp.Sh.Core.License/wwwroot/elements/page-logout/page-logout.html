@@ -28,6 +28,14 @@
                 padding-bottom: 10px !important;
             }
 
+            .card-content > div {
+                margin-bottom: 10px;
+            }
+
+            .center-button{
+                width: 160px;
+            }
+
             .header {
                 -webkit-font-smoothing: antialiased;
                 font-size: 24px;
@@ -55,9 +63,12 @@
                 <!-- Normal error area -->
                 <div class="card-content center-text">
                     <div class="header">You have been logged out</div>
-                    <div>
-                        In order to continue you can click <a href="{{redirectUri}}">here</a>
+                    <div class="content">
+                        In order to continue you can click the button below 
                         and be redirected to <strong>{{clientId}}</strong>
+                    </div>
+                    <div class="layout horizontal center-justified">
+                        <paper-button class="indigo center-button" on-tap="_redirect">Redirect</paper-button>
                     </div>
                 </div>
                 <!-- End -->
@@ -99,6 +110,13 @@
             * the first time
             */
             ready: function () {
+                
+            },
+
+            /**
+            * Redirect the client to the return url or to the home page
+            */
+            _redirect: function () {
 
             }
         });
