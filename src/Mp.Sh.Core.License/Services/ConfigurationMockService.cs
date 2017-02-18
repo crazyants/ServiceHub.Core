@@ -51,6 +51,10 @@ namespace Mp.Sh.Core.License.Services
                     {
                         new Secret("secret".Sha256())
                     },
+                    // where to redirect to after login
+                    RedirectUris = {
+                        "http://localhost:81/signin-oidc",
+                        "https://www.getpostman.com/oauth2/callback" },
                     // scopes that client has access to
                     AllowedScopes = { "account", "odata" }
                 },
@@ -77,13 +81,21 @@ namespace Mp.Sh.Core.License.Services
                         new Secret("secret".Sha256())
                     },
                     // this client can use only odata
-                    AllowedScopes = { "odata" }
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        IdentityServerConstants.StandardScopes.Address,
+                        "odata"  // backend api calls
+                    },
                 },
                 // OpenID Connect implicit flow client (MVC)
                 new Client
                 {
                     ClientId = "mvc_client",
                     ClientName = "MVC Client",
+                    LogoUri = "http://localhost:81/img/sh-rgb-57.png",
                     // allow access token + API Bearer authorization calls
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
 
@@ -94,7 +106,10 @@ namespace Mp.Sh.Core.License.Services
                     },
 
                     // where to redirect to after login
-                    RedirectUris = { "http://localhost:81/signin-oidc" },
+                    RedirectUris = {
+                        "http://localhost:81/signin-oidc",
+                        "https://www.getpostman.com/oauth2/callback" },
+
                     // where to redirect to after logout
                     PostLogoutRedirectUris = { "http://localhost:81" },
 
@@ -102,9 +117,11 @@ namespace Mp.Sh.Core.License.Services
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "odata" // backend api calls
+                        IdentityServerConstants.StandardScopes.Email,
+                        IdentityServerConstants.StandardScopes.Address,
+                        "odata"  // backend api calls
                     },
-
+                    AlwaysIncludeUserClaimsInIdToken = true, // this will return all claims
                     // refresh token
                     AllowOfflineAccess = true
                 }
@@ -121,6 +138,9 @@ namespace Mp.Sh.Core.License.Services
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResources.Email(),
+                new IdentityResources.Address(),
+                new IdentityResources.Phone()
             };
         }
 

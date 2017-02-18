@@ -1,8 +1,19 @@
 ﻿@using Microsoft.AspNetCore.Authentication
-@*@await ViewContext.HttpContext.Authentication.GetTokenAsync("access_token")
-@await ViewContext.HttpContext.Authentication.GetTokenAsync("refresh_token")*@
+@using System.Linq
+
+@{
+    var claims = User.Claims.ToList();
+    var display = User.FindFirst("name").Value;
+    var email = claims.Any(x => x.Type == "email") ? User.FindFirst("email").Value : User.FindFirst("idp").Value;
+    var user = new
+    {
+        username = User.Identity.Name,
+        displayName = display,
+        email = email
+    };
+}
 
 <link rel="import" href="~/elements/app-shell/app-shell.html" />
 
-<app-shell user-profile="@JsonConvert.SerializeObject(User.Identity.Name)">
+<app-shell user-profile="@JsonConvert.SerializeObject(user)">
 </app-shell>

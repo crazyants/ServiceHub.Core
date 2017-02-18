@@ -22,7 +22,7 @@
             <paper-header-panel drawer>
                 <app-profiletoolbar></app-profiletoolbar>
                 <div>
-                    <badge-profile></badge-profile>
+                    <badge-profile user-profile="{{userProfile}}"></badge-profile>
                     <!-- Navigation -->
                 </div>
             </paper-header-panel>
@@ -43,6 +43,9 @@
             is: 'app-shell',
 
             properties: {
+                /**
+                * The current claims DTO
+                */
                 userProfile: {
                     type: Object,
                     value: [],

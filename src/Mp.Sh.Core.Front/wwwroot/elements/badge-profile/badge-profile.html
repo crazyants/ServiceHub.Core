@@ -27,6 +27,11 @@
                 padding: 16px;
             }
 
+            paper-menu-button,
+            paper-icon-item {
+                cursor: pointer;
+            }
+
             .name {
                 @apply(--paper-font-body2);
             }
@@ -38,9 +43,9 @@
 
         <div class="container layout vertical start">
             <image-mask shape="circle" size="70" src="https://en.gravatar.com/userimage/3208099/5a8ed5c6dfd4707bc1f016e58e4b2c57.png"></image-mask>
-            <span class="name">{{name}}</span>
+            <span class="name">{{userProfile.displayName}}</span>
             <div class="layout horizontal center justified full-width">
-                <span class="email">{{email}}</span>
+                <span class="email">{{userProfile.email}}</span>
                 <paper-menu-button>
                     <paper-icon-button icon="arrow-drop-down" class="dropdown-trigger"></paper-icon-button>
                     <paper-menu class="dropdown-content">
@@ -48,11 +53,11 @@
                             <iron-icon icon="social:person" item-icon></iron-icon>
                             Profile
                         </paper-icon-item>
-                        <paper-icon-item>
+                        <paper-icon-item on-tap="_logout">
                             <iron-icon icon="exit-to-app" item-icon></iron-icon>
-                            Log out
+                            Logout
                         </paper-icon-item>
-                     </paper-menu>
+                    </paper-menu>
                 </paper-menu-button>
             </div>
         </div>
@@ -65,19 +70,21 @@
             is: 'badge-profile',
 
             properties: {
-                name: {
-                    type: String,
-                    value: 'Mario Rossi'
-                },
-                email: {
-                    type: String,
-                    value: 'mario.rossi@gmail.com'
-                },
+                /**
+                * The current claims DTO
+                */
                 userProfile: {
                     type: Object,
                     value: [],
                     reflectToAttribute: true
                 }
+            },
+
+            /**
+            * Logout from the UX and call the Identity Server logout method
+            */
+            _logout: function () {
+                location.href = '/Home/Logout';
             }
         });
     </script>

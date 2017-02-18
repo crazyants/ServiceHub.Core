@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Mp.Sh.Core.AspNet.Configurations;
 using Newtonsoft.Json;
 using Mp.Sh.Core.License.Services;
+using Mp.Sh.Core.License.Models;
 
 namespace Mp.Sh.Core.License
 {
@@ -58,10 +59,12 @@ namespace Mp.Sh.Core.License
 
             if (env.IsDevelopment())
             {
-                // disabled to show custom error page app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();
             }
-
-            app.UseExceptionHandler("/Home/Error");
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
 
             // inject a CSP header to allow dynamic content from Polymer
             app.Use(async (ctx, next) =>
@@ -73,6 +76,22 @@ namespace Mp.Sh.Core.License
 
             // bootstrap Indetity Server 4.0
             app.UseIdentityServer(); // inform that this is an identity server
+
+            // cookie middleware for temporarily storing the outcome of the external authentication
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                AutomaticAuthenticate = false,
+                AutomaticChallenge = false,
+                LoginPath = "/Account/Login"
+            });
+
+            // this cookie is used to authenticate into Identity Server itself
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = IdentityServerConstants.LocalIdentityProvider,
+                AutomaticChallenge = true
+            });
 
             var socialProvidersSection = Configuration.GetSection("SocialProviders").Get<SocialProviders>();
 
@@ -86,8 +105,8 @@ namespace Mp.Sh.Core.License
                         {
                             AuthenticationScheme = "Twitter",
                             SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                            ConsumerKey = provider.ClientKey,
-                            ConsumerSecret = provider.ClientId
+                            ConsumerKey = provider.ClientId,
+                            ConsumerSecret = provider.ClientKey
                         });
                     }
 
@@ -126,15 +145,6 @@ namespace Mp.Sh.Core.License
                 }
             }
 
-            // cookie middleware for temporarily storing the outcome of the external authentication
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                AutomaticAuthenticate = false,
-                AutomaticChallenge = true,
-                LoginPath = "/Account/Login"
-            });
-
             app.UseStaticFiles(); // configure static
             app.UseMvcWithDefaultRoute(); //  and mvc framework
         }
@@ -157,7 +167,7 @@ namespace Mp.Sh.Core.License
                 .AddInMemoryIdentityResources(ConfigurationMockService.GetIdentityResources()) // [OIDC resources]
                 .AddInMemoryApiResources(ConfigurationMockService.GetApiResources()) // apis to be protected
                 .AddInMemoryClients(ConfigurationMockService.GetClients()) // clients available
-                .AddTestUsers(ConfigurationMockService.GetUsers()); // users available
+                .AddTestUsers(TestUsers.Users); // users available
         }
 
         #endregion Public Methods

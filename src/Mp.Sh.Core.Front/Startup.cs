@@ -71,7 +71,8 @@ namespace Mp.Sh.Core.Front
             /* enable cookies authentication */
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                AuthenticationScheme = "Cookies"
+                AuthenticationScheme = "Cookies",
+                AutomaticAuthenticate = true // this consents Indentity Server to logout also the client
             });
 
             /* JWT needs to be turned off because we use "well-known ID"
@@ -88,8 +89,8 @@ namespace Mp.Sh.Core.Front
 
                 ClientId = "mvc_client", // it requires ClientID
                 ClientSecret = "secret", // and Client Secret used also in backend
-                ResponseType = "code id_token",
-                Scope = { "odata", "offline_access" }, // allow odata and refresh
+                ResponseType = "code id_token", // returns all required claims in the User.Identity object
+                Scope = { "odata", "offline_access", "email", "address" }, // allow odata and refresh
                 GetClaimsFromUserInfoEndpoint = true,
                 SaveTokens = true
             });

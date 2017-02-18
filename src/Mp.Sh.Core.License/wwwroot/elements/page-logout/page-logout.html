@@ -1,0 +1,106 @@
+<!-- Polymer Core -->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<!-- Iron elements -->
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html" />
+
+<!-- Paper elements -->
+<link rel="import" href="../../bower_components/paper-card/paper-card.html" />
+<link rel="import" href="../../bower_components/paper-button/paper-button.html" />
+
+<!-- Custom elements -->
+<link rel="import" href="../paper-theme/paper-theme.html" />
+
+<dom-module id="page-logout">
+    <template>
+
+        <style include="iron-flex iron-flex-alignment paper-theme">
+            paper-card {
+                width: 350px;
+            }
+
+            img {
+                margin-top: 20px;
+            }
+
+            .card-content {
+                padding-top: 10px !important;
+                padding-bottom: 10px !important;
+            }
+
+            .header {
+                -webkit-font-smoothing: antialiased;
+                font-size: 24px;
+                font-weight: 400;
+                letter-spacing: -.012em;
+                line-height: 32px;
+            }
+
+            .footer {
+                color: var(--disabled-text-color);
+                width: 350px;
+                margin-top: 20px;
+                text-align: center;
+            }
+        </style>
+
+        <div class="layout vertical center-justified full-height">
+
+            <paper-card class="self-center" id="logoutCard">
+
+                <div class="layout horizontal center-justified">
+                    <img src="../../img/check-icon-128.png" height="100" width="100" alt="Check Icon" />
+                </div>
+
+                <!-- Normal error area -->
+                <div class="card-content center-text">
+                    <div class="header">You have been logged out</div>
+                    <div>
+                        In order to continue you can click <a href="{{redirectUri}}">here</a>
+                        and be redirected to <strong>{{clientId}}</strong>
+                    </div>
+                </div>
+                <!-- End -->
+            </paper-card>
+
+            <div class="footer self-center">
+                <span>More information about our <a href="#">Privacy</a> and <a href="#">Terms of Usage</a>.</span>
+            </div>
+        </div>
+    </template>
+
+    <script>
+
+        /**
+        * <page-error> provide a paper card to display application errors
+        */
+        Polymer({
+            /** The id of the element */
+            is: 'page-logout',
+
+            /** The properties of the element*/
+            properties: {
+                /* The Url where the User should be redirected */
+                redirectUri: {
+                    type: String,
+                    value: '',
+                    reflectToAttribute: true
+                },
+                /* The Client which granted the original access */
+                clientId: {
+                    type: String,
+                    value: '',
+                    reflectToAttribute: true
+                }
+            },
+
+            /**
+            * Triggered when the DOM element is loaded
+            * the first time
+            */
+            ready: function () {
+
+            }
+        });
+    </script>
+</dom-module>

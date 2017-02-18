@@ -1,10 +1,12 @@
 ﻿@using IdentityServer4.Extensions
 @{
     string name = null;
+    string logoutId = null;
     if (!true.Equals(ViewData["signed-out"]))
     {
         var user = await Context.GetIdentityServerUserAsync();
         name = user?.FindFirst("name")?.Value;
+        logoutId = user?.FindFirst("id_token")?.Value;
     }
 }
 
