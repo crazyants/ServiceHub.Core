@@ -1,0 +1,9 @@
+{
+  "name": "asp.net",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer#^1.8.0",
+    "paper-elements": "1.0.7",
+    "iron-elements": "1.0.10"
+  }
+}

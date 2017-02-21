@@ -210,7 +210,7 @@ namespace IdentityServer4.Quickstart.UI
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody] LoginInputModel model)
         {
-            await Task.Delay(1000);
+            await Task.Delay(500);
 
             if (ModelState.IsValid)
             {
@@ -247,7 +247,6 @@ namespace IdentityServer4.Quickstart.UI
             }
 
             // something went wrong, send back errors
-            //var vm = await _account.BuildLoginViewModelAsync(model);
             return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
         }
 
