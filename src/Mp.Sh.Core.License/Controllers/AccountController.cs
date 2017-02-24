@@ -192,6 +192,7 @@ namespace IdentityServer4.Quickstart.UI
         [HttpGet]
         public async Task<IActionResult> Login(string returnUrl)
         {
+            ViewBag.Title = "Mproof | Login";
             var vm = await _account.BuildLoginViewModelAsync(returnUrl);
 
             if (vm.IsExternalLoginOnly)
@@ -210,8 +211,6 @@ namespace IdentityServer4.Quickstart.UI
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody] LoginInputModel model)
         {
-            await Task.Delay(500);
-
             if (ModelState.IsValid)
             {
                 // validate username/password against in-memory store

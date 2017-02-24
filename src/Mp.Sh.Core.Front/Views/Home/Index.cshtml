@@ -3,13 +3,13 @@
 
 @{
     var claims = User.Claims.ToList();
-    var display = User.FindFirst("name").Value;
-    var email = claims.Any(x => x.Type == "email") ? User.FindFirst("email").Value : User.FindFirst("idp").Value;
+    var display = User?.FindFirst("name")?.Value;
+    var email = claims.Any(x => x.Type == "email") ? User.FindFirst("email")?.Value : User.FindFirst("idp")?.Value;
     var user = new
     {
-        username = User.Identity.Name,
-        displayName = display,
-        email = email
+        username = User.Identity.Name ?? User.FindFirst("sub")?.Value,
+        displayName = display ?? User.FindFirst("aud")?.Value,
+        email = email ?? "n/a"
     };
 }
 

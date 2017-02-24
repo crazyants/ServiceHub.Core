@@ -1,0 +1,344 @@
+﻿<!-- Polymer Core -->
+<link rel="import" href="../../lib/polymer/polymer.html" />
+
+<!-- Iron elements -->
+<link rel="import" href="../../lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="../../lib/iron-form/iron-form.html" />
+<link rel="import" href="../../lib/iron-a11y-keys/iron-a11y-keys.html" />
+<link rel="import" href="../../lib/iron-icons/iron-icons.html" />
+<link rel="import" href="../../lib/iron-icon/iron-icon.html" />
+
+<!-- Paper elements -->
+<link rel="import" href="../../lib/paper-progress/paper-progress.html" />
+<link rel="import" href="../../lib/paper-card/paper-card.html" />
+<link rel="import" href="../../lib/paper-button/paper-button.html" />
+<link rel="import" href="../../lib/paper-input/paper-input.html" />
+<link rel="import" href="../../lib/paper-checkbox/paper-checkbox.html" />
+<link rel="import" href="../../lib/paper-button/paper-button.html" />
+<link rel="import" href="../../lib/paper-icon-button/paper-icon-button.html" />
+<link rel="import" href="../../lib/iron-dropdown/iron-dropdown.html" />
+<link rel="import" href="../../lib/paper-toast/paper-toast.html" />
+
+<!-- Custom elements -->
+<link rel="import" href="../paper-icon/social-icon.html" />
+<link rel="import" href="../paper-theme/paper-theme.html" />
+<link rel="import" href="../../lib/image-mask/image-mask.html" />
+
+<dom-module id="page-consent">
+    <template>
+
+        <style include="iron-flex iron-flex-alignment paper-theme">
+
+            paper-progress {
+                width: 350px;
+            }
+
+            paper-card {
+                width: 350px;
+            }
+
+            paper-button {
+                width: 110px;
+            }
+
+            img {
+                margin-top: 20px;
+                height: 68px;
+                width: 68px;
+                padding: 3px;
+            }
+
+            .avatar {
+                display: block;
+                border-radius: 200px;
+                box-sizing: border-box;
+                border: 3px solid #DEDEDE;
+            }
+
+            .card-content {
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+
+            .sub-check {
+                display: block;
+                font-size: 0.8em;
+                margin-top: 2px;
+                max-width: 250px;
+            }
+
+            .separator {
+                width: 100%;
+                border-bottom: 1px solid var(--divider-color);
+                margin: 3px 0;
+            }
+
+            .footer {
+                color: var(--disabled-text-color);
+                width: 350px;
+                margin-top: 20px;
+                text-align: center;
+            }
+
+            h3, h4, h5 {
+                margin: 5px 0 5px !important;
+                text-align: center;
+            }
+
+            h4 {
+                font-weight: 400;
+                margin-top: 10px !important;
+                margin-bottom: 10px !important;
+            }
+
+            h5 {
+                font-weight: 300;
+            }
+        </style>
+
+        <iron-a11y-keys target="[[_target]]" keys="enter" on-keys-pressed="_consent">
+        </iron-a11y-keys>
+
+        <div class="layout vertical center-justified full-height">
+            <paper-progress indeterminate class="self-center" id="progress" disabled></paper-progress>
+
+            <paper-card class="self-center" id="consentCard">
+
+                <div class="layout horizontal center-justified">
+                    <img src="{{logoUrl}}" class="avatar" />
+                    <img src="{{profileUrl}}" class="avatar" />
+                </div>
+                <!-- Iron Form -->
+                <form is="iron-form" id="form" method="post" action="/consent/index" content-type="application/json">
+
+                    <!-- Normal authentication area -->
+                    <div class="card-content">
+                        <div class="layout horizontal center center-justified">
+                            <paper-icon-button icon="arrow-drop-down" class="dropdown-trigger" on-tap="_openTerms"></paper-icon-button>
+                            <iron-dropdown id="terms" horizontal-align="right" vertical-align="top">
+                                <paper-card class="dropdown-content">
+                                    <div class="card-content">
+                                        <p>
+                                            If you want to know more about <strong>{{clientName}}</strong>'s Privacy Policies and Terms of Usage,
+                                            please follow <a href="{{policyUrl}}" target="_blank">this link</a>.
+                                        </p>
+                                    </div>
+                                </paper-card>
+                            </iron-dropdown>
+                            <h3><span style="font-weight:500;">{{clientName}}</span> would like to:</h3>
+                        </div>
+                    </div>
+                    <!-- End -->
+
+                    <!-- Identity Scopes -->
+                    <div class="card-content layout vertical">
+                        <h4>Access the following Security Information</h4>
+                        <template is="dom-repeat" items="{{identityScopes}}">
+                            <div class="layout horizontal center justified" style="margin: 5px;">
+                                <paper-checkbox name="{{item.Name}}"
+                                                checked="{{item.Checked}}"
+                                                disabled$="{{item.Required}}">
+                                    {{item.DisplayName}}
+                                    <span class="sub-check">{{item.Description}}</span>
+                                </paper-checkbox>
+                                <template is="dom-if" if="{{item.Emphasize}}">
+                                    <iron-icon icon="lock-outline"></iron-icon>
+                                </template>
+                                <template is="dom-if" if="{{!item.Emphasize}}">
+                                    <iron-icon icon="info-outline"></iron-icon>
+                                </template>
+                            </div>
+                            <span class="separator" />
+                        </template>
+                    </div>
+
+                    <!-- Resources Scopes -->
+                    <div class="card-content layout vertical">
+                        <h4>Access the following Resources</h4>
+                        <template is="dom-repeat" items="{{resourceScopes}}">
+                            <div class="layout horizontal center justified" style="margin: 5px;">
+                                <paper-checkbox name="{{item.Name}}"
+                                                checked="{{item.Checked}}"
+                                                disabled$="{{item.Required}}">
+                                    {{item.DisplayName}}
+                                    <span class="sub-check">{{item.Description}}</span>
+                                </paper-checkbox>
+                                <template is="dom-if" if="{{item.Emphasize}}">
+                                    <iron-icon icon="lock-outline"></iron-icon>
+                                </template>
+                                <template is="dom-if" if="{{!item.Emphasize}}">
+                                    <iron-icon icon="info-outline"></iron-icon>
+                                </template>
+                            </div>
+                            <span class="separator" />
+                        </template>
+                    </div>
+
+                    <!-- Remember the choice -->
+                    <div class="card-content layout vertical">
+                        <h4>Do you want to remember this choice?</h4>
+                        <div class="layout horizontal center justified" style="margin: 5px;">
+                            <paper-checkbox checked="{{consentModel.remember}}">Remember this choice</paper-checkbox>
+                            <iron-icon icon="info-outline"></iron-icon>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="card-content layout horizontal center end-justified" style="height:80px;">
+                        <paper-button raised on-tap="_consent" data-args="no">Cancel</paper-button>
+                        <paper-button raised class="indigo" on-tap="_consent" data-args="yes">Accept</paper-button>
+                    </div>
+                </form>
+                <!-- End Form -->
+            </paper-card>
+
+            <div class="footer self-center">
+                <span>More information about our <a href="#">Privacy</a> and <a href="#">Terms of Usage</a>.</span>
+            </div>
+
+            <paper-toast id="messages" class="fit-bottom"></paper-toast>
+        </div>
+    </template>
+
+    <script>
+
+        /**
+        * <page-consent> provide a form to authorize access to certain
+        * scopes
+        */
+        Polymer({
+            /** The id of the element */
+            is: 'page-consent',
+
+            /** The properties of the element*/
+            properties: {
+
+                /** The Url used to redirect after consent is approved */
+                returnUrl: {
+                    type: String,
+                    value: '',
+                    reflectToAttribute: true
+                },
+                /** The URL of the Client Image */
+                logoUrl: {
+                    type: String,
+                    value: '',
+                    reflectToAttribute: true
+                },
+                /** The URL of the gravatar image */
+                profileUrl: {
+                    type: String,
+                    value: 'https://en.gravatar.com/userimage/3208099/5a8ed5c6dfd4707bc1f016e58e4b2c57.png',
+                    reflectToAttribute: true
+                },
+                /** The name of the Client asking for permissions */
+                clientName: {
+                    type: String,
+                    value: '',
+                    reflectToAttribute: true
+                },
+                /** The URL that points to Terms of Service */
+                policyUrl: {
+                    type: String,
+                    value: '',
+                    reflectToAttribute: true
+                },
+                /** A list of scopes that requires validation */
+                identityScopes: {
+                    type: Array,
+                    value: [],
+                    reflectToAttribute: true
+                },
+                /** A list of scopes that access resources */
+                resourceScopes: {
+                    type: Array,
+                    value: [],
+                    reflectToAttribute: true
+                },
+                /** The Message sent out */
+                consentModel: {
+                    type: Object,
+                    value: {
+                        choice: '',
+                        remember: false,
+                        returnUrl: '',
+                        scopes: []
+                    }
+                }
+            },
+
+            /**
+            * Triggered when the DOM element is loaded
+            * the first time
+            */
+            ready: function () {
+
+                /* set the target of the Message Toast */
+                this.$.messages.fitInto = this.$.consentCard;
+
+                /* set some references */
+                var form = this.$.form;
+                var me = this;
+
+                /**
+                * Triggered when the form is pre submitted
+                */
+                form.addEventListener('iron-form-presubmit', function (event) {
+                    me.$.progress.disabled = false;
+
+                    /* Retrieve all selected Scopes */
+                    me.consentModel.scopes = [];
+                    var checkboxes = document.querySelectorAll('paper-checkbox');
+                    checkboxes.forEach(function (checkbox) {
+                        if (checkbox.checked) {
+                            me.consentModel.scopes.push(checkbox.name);
+                        }
+                    });
+                    me.consentModel.returnUrl = me.returnUrl;
+                    this.request.body = me.consentModel;
+                });
+
+                /**
+                * Triggered when the form is returning with 200
+                */
+                form.addEventListener('iron-form-response', function (event) {
+                    me.$.progress.disabled = true;
+                    location.href = event.detail.response;
+                });
+
+                /**
+                * Triggered when the form returns any HTTP error
+                */
+                form.addEventListener('iron-form-error', function (event) {
+                    me.$.progress.disabled = true;
+                    me.$.messages.text = event.detail.request.response[0].errorMessage;
+                    me.$.messages.open();
+                });
+
+                /**
+                * Triggered when the form has invalid data
+                */
+                form.addEventListener('iron-form-invalid', function (event) {
+                    me.$.progress.disabled = true;
+                    me.$.messages.text = 'Please check, there are some errors';
+                    me.$.messages.open();
+                });
+            },
+
+            /**
+            * Validate and submit the Login form
+            */
+            _consent: function (e, detail) {
+                this.consentModel.choice = e.target.getAttribute('data-args');
+                this.$.form.submit();
+            },
+
+            /**
+            *
+            */
+            _openTerms: function () {
+                this.$.terms.open();
+            }
+        });
+    </script>
+</dom-module>

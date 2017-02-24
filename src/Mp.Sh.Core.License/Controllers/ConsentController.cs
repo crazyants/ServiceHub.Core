@@ -54,6 +54,7 @@ namespace Mp.Sh.Core.License.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string returnUrl)
         {
+            ViewBag.Title = "Mproof | Client Consent";
             var vm = await _consent.BuildViewModelAsync(returnUrl);
             if (vm != null)
             {
@@ -67,19 +68,20 @@ namespace Mp.Sh.Core.License.Controllers
         /// Handles the consent screen postback 
         /// </summary>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ConsentInputModel model)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index([FromBody] ConsentInputModel model)
         {
             var result = await _consent.ProcessConsent(model);
 
             if (result.IsRedirect)
             {
-                return Redirect(result.RedirectUri);
+                return Json(result.RedirectUri);
             }
 
             if (result.HasValidationError)
             {
                 ModelState.AddModelError("", result.ValidationError);
+                return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
             }
 
             if (result.ShowView)
@@ -87,7 +89,7 @@ namespace Mp.Sh.Core.License.Controllers
                 return View("Index", result.ViewModel);
             }
 
-            return View("Error");
+            return BadRequest("A generic error occurred");
         }
 
         #endregion Public Methods

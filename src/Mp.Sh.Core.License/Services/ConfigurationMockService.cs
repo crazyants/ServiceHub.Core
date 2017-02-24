@@ -10,6 +10,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Mp.Sh.Core.License.Services
 {
@@ -26,11 +27,15 @@ namespace Mp.Sh.Core.License.Services
         /// <returns></returns>
         public static IEnumerable<ApiResource> GetApiResources()
         {
-            return new List<ApiResource>
+            var resources = new List<ApiResource>
             {
                 new ApiResource("account", "Account APIs"),
                 new ApiResource("odata", "OData APIs")
             };
+
+            resources.Where(x => x.Name == "odata").FirstOrDefault()
+                .Scopes.FirstOrDefault().Description = "Provide REST resources conneted to an RDBMS";
+            return resources;
         }
 
         /// <summary>
@@ -94,8 +99,9 @@ namespace Mp.Sh.Core.License.Services
                 new Client
                 {
                     ClientId = "mvc_client",
-                    ClientName = "MVC Client",
+                    ClientName = "Service Hub Core",
                     LogoUri = "http://localhost:81/img/sh-rgb-57.png",
+                    ClientUri = "http://service-hub.com/terms-of-service/",
                     // allow access token + API Bearer authorization calls
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
 
@@ -141,6 +147,33 @@ namespace Mp.Sh.Core.License.Services
                 new IdentityResources.Email(),
                 new IdentityResources.Address(),
                 new IdentityResources.Phone()
+            };
+        }
+
+        /// <summary>
+        /// Example of Scope to define access to resources 
+        /// </summary>
+        /// <returns></returns>
+        public static List<Scope> GetScopes()
+        {
+            return new List<Scope>
+            {
+                new Scope
+                {
+                    Name = "person.read",
+                    Description = "Provides a set of Read operation for the resource Person",
+                    DisplayName = "Person Read Scope",
+                    ShowInDiscoveryDocument = true,
+                    UserClaims = new[] { "query", "filter", "top", "expand" }
+                },
+                new Scope
+                {
+                    Name = "person.write",
+                    Description = "Provides a set of Write operation for the resource Person",
+                    DisplayName = "Person Write Scope",
+                    ShowInDiscoveryDocument = true,
+                    UserClaims = new[] { "create", "delete", "update", "assign.company" }
+                }
             };
         }
 

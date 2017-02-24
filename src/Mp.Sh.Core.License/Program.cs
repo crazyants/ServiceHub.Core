@@ -20,6 +20,9 @@ namespace Mp.Sh.Core.License
         public static void Main(string[] args)
         {
             Console.Title = "License Manager Core | Mproof";
+            Console.SetWindowSize(60, 20);
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.Clear();
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())

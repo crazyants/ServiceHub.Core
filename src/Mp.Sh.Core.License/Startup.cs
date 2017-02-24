@@ -16,6 +16,7 @@ using Mp.Sh.Core.AspNet.Configurations;
 using Newtonsoft.Json;
 using Mp.Sh.Core.License.Services;
 using Mp.Sh.Core.License.Models;
+using Newtonsoft.Json.Serialization;
 
 namespace Mp.Sh.Core.License
 {
@@ -159,6 +160,7 @@ namespace Mp.Sh.Core.License
                 {
                     opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });
             // add identity server functionalities
             services

@@ -112,17 +112,17 @@ namespace Mp.Sh.Core.License.Services
             ConsentResponse grantedConsent = null;
 
             // user clicked 'no' - send back the standard 'access_denied' response
-            if (model.Button == "no")
+            if (model.Choice == "no")
             {
                 grantedConsent = ConsentResponse.Denied;
             }
             // user clicked 'yes' - validate the data
-            else if (model.Button == "yes" && model != null)
+            else if (model.Choice == "yes" && model != null)
             {
                 // if the user consented to some scope, build the response model
-                if (model.ScopesConsented != null && model.ScopesConsented.Any())
+                if (model.Scopes != null && model.Scopes.Any())
                 {
-                    var scopes = model.ScopesConsented;
+                    var scopes = model.Scopes;
                     if (ConsentOptions.EnableOfflineAccess == false)
                     {
                         scopes = scopes.Where(x => x != IdentityServerConstants.StandardScopes.OfflineAccess);
@@ -130,7 +130,7 @@ namespace Mp.Sh.Core.License.Services
 
                     grantedConsent = new ConsentResponse
                     {
-                        RememberConsent = model.RememberConsent,
+                        RememberConsent = model.Remember,
                         ScopesConsented = scopes.ToArray()
                     };
                 }
@@ -175,8 +175,8 @@ namespace Mp.Sh.Core.License.Services
             Client client, Resources resources)
         {
             var vm = new ConsentViewModel();
-            vm.RememberConsent = model?.RememberConsent ?? true;
-            vm.ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>();
+            vm.Remember = model?.Remember ?? true;
+            vm.Scopes = model?.Scopes ?? Enumerable.Empty<string>();
 
             vm.ReturnUrl = returnUrl;
 
@@ -185,12 +185,12 @@ namespace Mp.Sh.Core.License.Services
             vm.ClientLogoUrl = client.LogoUri;
             vm.AllowRememberConsent = client.AllowRememberConsent;
 
-            vm.IdentityScopes = resources.IdentityResources.Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
-            vm.ResourceScopes = resources.ApiResources.SelectMany(x => x.Scopes).Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
+            vm.IdentityScopes = resources.IdentityResources.Select(x => CreateScopeViewModel(x, vm.Scopes.Contains(x.Name) || model == null)).ToArray();
+            vm.ResourceScopes = resources.ApiResources.SelectMany(x => x.Scopes).Select(x => CreateScopeViewModel(x, vm.Scopes.Contains(x.Name) || model == null)).ToArray();
             if (ConsentOptions.EnableOfflineAccess && resources.OfflineAccess)
             {
                 vm.ResourceScopes = vm.ResourceScopes.Union(new ScopeViewModel[] {
-                    GetOfflineAccessScope(vm.ScopesConsented.Contains(IdentityServerConstants.StandardScopes.OfflineAccess) || model == null)
+                    GetOfflineAccessScope(vm.Scopes.Contains(IdentityServerConstants.StandardScopes.OfflineAccess) || model == null)
                 });
             }
 
