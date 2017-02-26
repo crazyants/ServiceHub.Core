@@ -3,6 +3,13 @@
 This project is build on top of the new NET CLI (.NET Core 1.1) using ASP.NET Core, Entity Framework Core and Polymer 2.0
 This is the main repo for Service Hub Core, if you want to know more about it, read below:
 
+## Status
+
+ - Build: ![](https://mproof.visualstudio.com/_apis/public/build/definitions/dbf7541f-191e-41aa-ab60-7aab487db198/2/badge)
+ - Docs: 
+ - Tests: 
+ - Coverage
+
 ## Table of Contents
 
 - [Architecture](https://github.com/Mproof/ServiceHub.Core)

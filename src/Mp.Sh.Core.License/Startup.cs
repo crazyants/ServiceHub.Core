@@ -17,6 +17,10 @@ using Newtonsoft.Json;
 using Mp.Sh.Core.License.Services;
 using Mp.Sh.Core.License.Models;
 using Newtonsoft.Json.Serialization;
+using Mp.Sh.Core.License.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.ActiveDirectory;
 
 namespace Mp.Sh.Core.License
 {
@@ -74,6 +78,9 @@ namespace Mp.Sh.Core.License
                                          "default-src 'self' * 'unsafe-inline' 'unsafe-eval' data:");
                 await next();
             });
+
+            // enable asp.net identiy BEFORE Identity Server
+            app.UseIdentity();
 
             // bootstrap Indetity Server 4.0
             app.UseIdentityServer(); // inform that this is an identity server
@@ -143,6 +150,17 @@ namespace Mp.Sh.Core.License
                             ClientSecret = provider.ClientKey
                         });
                     }
+
+                    if (provider.Name.ToLower().Equals("microsoft"))
+                    {
+                        app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
+                        {
+                            AuthenticationScheme = "Microsoft",
+                            SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                            ClientId = provider.ClientId,
+                            ClientSecret = provider.ClientKey
+                        });
+                    }
                 }
             }
 
@@ -153,6 +171,17 @@ namespace Mp.Sh.Core.License
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // entity framework for asp.net identity
+            services
+                .AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
+
+            // identity models
+            services
+                .AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             // [asp.net core mvc]
             services
                 .AddMvc()
@@ -162,6 +191,11 @@ namespace Mp.Sh.Core.License
                     opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });
+
+            // [asp.net identity services]
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
+
             // add identity server functionalities
             services
                 .AddIdentityServer()
@@ -169,7 +203,7 @@ namespace Mp.Sh.Core.License
                 .AddInMemoryIdentityResources(ConfigurationMockService.GetIdentityResources()) // [OIDC resources]
                 .AddInMemoryApiResources(ConfigurationMockService.GetApiResources()) // apis to be protected
                 .AddInMemoryClients(ConfigurationMockService.GetClients()) // clients available
-                .AddTestUsers(TestUsers.Users); // users available
+                .AddAspNetIdentity<ApplicationUser>(); // users available
         }
 
         #endregion Public Methods
