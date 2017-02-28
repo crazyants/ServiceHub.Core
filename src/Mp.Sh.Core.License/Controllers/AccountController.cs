@@ -7,14 +7,15 @@ Last Edit: Raffaele Garofalo
 \***************************************************************************/
 
 using IdentityModel;
-using IdentityServer4;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Mp.Sh.Core.License.Models;
 using Mp.Sh.Core.License.Services;
 using System;
@@ -22,7 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Threading;
 using System.Threading.Tasks;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -36,13 +36,21 @@ namespace IdentityServer4.Quickstart.UI
     /// provides a way for the UI to communicate with identityserver for validation and context retrieval
     /// </summary>
     [SecurityHeaders]
+    [Authorize]
     public class AccountController : Controller
     {
         #region Private Fields
 
         private readonly AccountService _account;
+        private readonly IEmailSender _emailSender;
         private readonly IIdentityServerInteractionService _interaction;
-        private readonly TestUserStore _users;
+
+        //private readonly TestUserStore _users;
+
+        private readonly ILogger _logger;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ISmsSender _smsSender;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         #endregion Private Fields
 
@@ -52,12 +60,19 @@ namespace IdentityServer4.Quickstart.UI
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IHttpContextAccessor httpContextAccessor,
-            TestUserStore users = null)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IEmailSender emailSender,
+            ISmsSender smsSender,
+            ILoggerFactory loggerFactory)
         {
-            // if the TestUserStore is not in DI, then we'll just use the global users collection
-            _users = users ?? new TestUserStore(TestUsers.Users);
             _interaction = interaction;
-            _account = new AccountService(interaction, httpContextAccessor, clientStore);
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _emailSender = emailSender;
+            _smsSender = smsSender;
+            _logger = loggerFactory.CreateLogger<AccountController>();
+            _account = new AccountService(_interaction, httpContextAccessor, clientStore);
         }
 
         #endregion Public Constructors
@@ -116,6 +131,7 @@ namespace IdentityServer4.Quickstart.UI
         {
             // read external identity from the temporary cookie
             var info = await HttpContext.Authentication.GetAuthenticateInfoAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            var loginInfo = await _signInManager.GetExternalLoginInfoAsync();
             var tempUser = info?.Principal;
             if (tempUser == null)
             {
@@ -145,12 +161,16 @@ namespace IdentityServer4.Quickstart.UI
             var userId = userIdClaim.Value;
 
             // check if the external user is already provisioned
-            var user = _users.FindByExternalProvider(provider, userId);
+            var user = await _userManager.FindByLoginAsync(provider, userId);
+
+            //var user = _users.FindByExternalProvider(provider, userId);
             if (user == null)
             {
                 // this sample simply auto-provisions new external user another common approach is to
                 // start a registrations workflow first
-                user = _users.AutoProvisionUser(provider, userId, claims);
+                throw new NotImplementedException("The User does not exist");
+
+                //user = _users.AutoProvisionUser(provider, userId, claims);
             }
 
             var additionalClaims = new List<Claim>();
@@ -172,7 +192,7 @@ namespace IdentityServer4.Quickstart.UI
             }
 
             // issue authentication cookie for user
-            await HttpContext.Authentication.SignInAsync(user.SubjectId, user.Username, provider, props, additionalClaims.ToArray());
+            await _signInManager.ExternalLoginSignInAsync(loginInfo.LoginProvider, loginInfo.ProviderKey, false);
 
             // delete temporary cookie used during external authentication
             await HttpContext.Authentication.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
@@ -190,6 +210,7 @@ namespace IdentityServer4.Quickstart.UI
         /// Show login page 
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl)
         {
             ViewBag.Title = "Mproof | Login";
@@ -208,30 +229,31 @@ namespace IdentityServer4.Quickstart.UI
         /// Handle postback from username/password login 
         /// </summary>
         [HttpPost]
+        [AllowAnonymous]
+
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody] LoginInputModel model)
         {
             if (ModelState.IsValid)
             {
-                // validate username/password against in-memory store
-                if (_users.ValidateCredentials(model.Username, model.Password))
+                AuthenticationProperties props = null;
+
+                // only set explicit expiration here if persistent. otherwise we reply upon
+                // expiration configured in cookie middleware.
+                if (AccountOptions.AllowRememberLogin && model.RememberLogin)
                 {
-                    AuthenticationProperties props = null;
-                    // only set explicit expiration here if persistent. otherwise we reply upon
-                    // expiration configured in cookie middleware.
-                    if (AccountOptions.AllowRememberLogin && model.RememberLogin)
+                    props = new AuthenticationProperties
                     {
-                        props = new AuthenticationProperties
-                        {
-                            IsPersistent = true,
-                            ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
-                        };
+                        IsPersistent = true,
+                        ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
                     };
+                };
 
-                    // issue authentication cookie with subject ID and username
-                    var user = _users.FindByUsername(model.Username);
-                    await HttpContext.Authentication.SignInAsync(user.SubjectId, user.Username, props);
+                // validate username/password against in-memory store
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, props?.IsPersistent ?? false, false);
 
+                if (result.Succeeded)
+                {
                     // make sure the returnUrl is still valid, and if yes - redirect back to
                     // authorize endpoint
                     if (_interaction.IsValidReturnUrl(model.ReturnUrl))
@@ -270,6 +292,7 @@ namespace IdentityServer4.Quickstart.UI
         /// Handle logout page postback 
         /// </summary>
         [HttpPost]
+
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout(LogoutInputModel model)
         {

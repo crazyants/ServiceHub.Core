@@ -62,10 +62,10 @@
                 margin: 0 10px;
             }
 
-            paper-icon-button::shadow #icon {
-                width: 50px;
-                height: 50px;
-            }
+                paper-icon-button::shadow #icon {
+                    width: 50px;
+                    height: 50px;
+                }
 
             .OpenIdConnect {
                 color: #EE820F;
@@ -117,9 +117,10 @@
                                      auto-validate
                                      autofocus
                                      no-label-float
-                                     error-message="The Username can't be empty'"
+                                     error-message="The E-mail can't be empty'"
                                      name="Username"
-                                     label="Username"></paper-input>
+                                     type="email"
+                                     label="E-mail"></paper-input>
                         <paper-input required
                                      auto-validate
                                      no-label-float
@@ -167,7 +168,7 @@
                 <span>More information about our <a href="#">Privacy</a> and <a href="#">Terms of Usage</a>.</span>
             </div>
 
-            <paper-toast id="messages" class="fit-bottom"></paper-toast>
+            <paper-toast id="messages" class="fit-bottom" text="{{errorMessage}}"></paper-toast>
         </div>
     </template>
 
@@ -227,6 +228,12 @@
                 googleSignin: {
                     type: Object,
                     value: {}
+                },
+
+                /** Error message raised */
+                errorMessage: {
+                    type: String,
+                    value: ''
                 }
             },
 
@@ -263,7 +270,13 @@
                 */
                 form.addEventListener('iron-form-error', function (event) {
                     me.$.progress.disabled = true;
-                    me.$.messages.text = event.detail.request.response[0].errorMessage;
+                    if (event.detail.request.response) {
+                        me.errorMessage = event.detail.request.response[0].errorMessage;
+                    } else if (event.detail.error) {
+                        me.errorMessage = event.detail.error.message;
+                    } else {
+                        me.errorMessage = "Unknown Error";
+                    }
                     me.$.messages.open();
                 });
 
@@ -272,7 +285,7 @@
                 */
                 form.addEventListener('iron-form-invalid', function (event) {
                     me.$.progress.disabled = true;
-                    me.$.messages.text = 'Please check, there are some errors';
+                    me.errorMessage = 'Please check, there are some errors';
                     me.$.messages.open();
                 });
             },

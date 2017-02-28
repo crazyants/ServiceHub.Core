@@ -46,11 +46,13 @@ namespace Mp.Sh.Core.License.Fixtures.Unit
             mockClientStore = new Mock<IClientStore>();
             mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
             userStore = new TestUserStore(ConfigurationMockService.GetUsers());
-            accountController = new AccountController(
-                mockInteraction.Object,
-                mockClientStore.Object,
-                mockHttpContextAccessor.Object,
-                userStore);
+            accountController = null;
+
+            //new AccountController(
+            //    mockInteraction.Object,
+            //    mockClientStore.Object,
+            //    mockHttpContextAccessor.Object,
+            //    userStore);
         }
 
         #endregion Public Constructors

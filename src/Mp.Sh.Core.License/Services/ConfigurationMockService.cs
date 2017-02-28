@@ -49,42 +49,51 @@ namespace Mp.Sh.Core.License.Services
                 new Client
                 {
                     ClientId = "admin_client",
+
                     // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
+
                     // secret for authentication
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
+
                     // where to redirect to after login
                     RedirectUris = {
                         "http://localhost:81/signin-oidc",
                         "https://www.getpostman.com/oauth2/callback" },
+
                     // scopes that client has access to
                     AllowedScopes = { "account", "odata" }
                 },
                 new Client
                 {
                     ClientId = "api_client",
+
                     // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
+
                     // secret for authentication
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
+
                     // scopes that client has access to
                     AllowedScopes = { "odata" }
                 },
                 new Client
                 {
                     ClientId = "ro_client",
+
                     // allow interactive user
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
+
                     // this client can use only odata
                     AllowedScopes = new List<string>
                     {
@@ -95,6 +104,7 @@ namespace Mp.Sh.Core.License.Services
                         "odata"  // backend api calls
                     },
                 },
+
                 // OpenID Connect implicit flow client (MVC)
                 new Client
                 {
@@ -102,8 +112,10 @@ namespace Mp.Sh.Core.License.Services
                     ClientName = "Service Hub Core",
                     LogoUri = "http://localhost:81/img/sh-rgb-57.png",
                     ClientUri = "http://service-hub.com/terms-of-service/",
+
                     // allow access token + API Bearer authorization calls
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+                    RequireConsent = false,
 
                     // Client secrets for access token
                     ClientSecrets =
@@ -128,6 +140,7 @@ namespace Mp.Sh.Core.License.Services
                         "odata"  // backend api calls
                     },
                     AlwaysIncludeUserClaimsInIdToken = true, // this will return all claims
+
                     // refresh token
                     AllowOfflineAccess = true
                 }
