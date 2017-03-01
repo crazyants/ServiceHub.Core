@@ -44,7 +44,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
 
         #region Public Methods
 
-        [Fact]
+        [Fact(Skip = "It's not ready yet")]
         [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_GrantClientToken_ForAdminClient()
         {
@@ -62,7 +62,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        [Fact]
+        [Fact(Skip = "It's not ready yet")]
         [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_GrantClientToken_ForODataClient()
         {
@@ -80,7 +80,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        [Fact]
+        [Fact(Skip = "It's not ready yet")]
         [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_GrantUserToken_WithUserClient()
         {
@@ -100,7 +100,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        [Fact]
+        [Fact(Skip = "It's not ready yet")]
         [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_Returns_200()
         {
@@ -112,7 +112,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        [Fact]
+        [Fact(Skip = "It's not ready yet")]
         [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_Should_Returns_ValidJson()
         {
@@ -127,7 +127,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
             responseJson.Should().NotBeNull();
         }
 
-        [Fact]
+        [Fact(Skip = "It's not ready yet")]
         [Trait("Category", "License Server")]
         public async void DiscoverEndpoint_ShouldNot_GrantUserToken_WithoutUserClient()
         {

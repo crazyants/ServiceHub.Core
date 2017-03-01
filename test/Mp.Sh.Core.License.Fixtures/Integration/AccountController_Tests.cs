@@ -62,7 +62,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        [Fact]
+        [Fact(Skip = "It's not ready yet")]
         [Trait("Category", "License Server")]
         [Trait("Category", "Account")]
         public async void AccountController_UserToken_Return_200()
