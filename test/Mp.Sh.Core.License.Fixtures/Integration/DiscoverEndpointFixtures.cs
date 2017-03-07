@@ -19,7 +19,8 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.License.Fixtures.Integration
 {
-    public class DiscoverEndpoint_Tests : IDisposable
+    [Trait("Category", "License Server")]
+    public class DiscoverEndpointFixtures : IDisposable
     {
         #region Private Fields
 
@@ -31,7 +32,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
 
         #region Public Constructors
 
-        public DiscoverEndpoint_Tests(ITestOutputHelper output)
+        public DiscoverEndpointFixtures(ITestOutputHelper output)
         {
             this.output = output;
             var builder = new WebHostBuilder().UseStartup<Startup>();
@@ -44,9 +45,14 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
 
         #region Public Methods
 
+        public void Dispose()
+        {
+            client.Dispose();
+            server.Dispose();
+        }
+
         [Fact(Skip = "It's not ready yet")]
-        [Trait("Category", "License Server")]
-        public async void DiscoverEndpoint_Should_GrantClientToken_ForAdminClient()
+        public async void When_Authenticate_AdminClient_Should_ReturnToken()
         {
             var content = new FormUrlEncodedContent(
                 new[] {
@@ -63,26 +69,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
         }
 
         [Fact(Skip = "It's not ready yet")]
-        [Trait("Category", "License Server")]
-        public async void DiscoverEndpoint_Should_GrantClientToken_ForODataClient()
-        {
-            var content = new FormUrlEncodedContent(
-                new[] {
-                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                    new KeyValuePair<string, string>("client_id", "api_client"),
-                    new KeyValuePair<string, string>("client_secret", "secret")
-                }
-            );
-
-            var response = await client.PostAsync("/connect/token", content);
-            var responseString = await response.Content.ReadAsStringAsync();
-            output.WriteLine(responseString);
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        [Fact(Skip = "It's not ready yet")]
-        [Trait("Category", "License Server")]
-        public async void DiscoverEndpoint_Should_GrantUserToken_WithUserClient()
+        public async void When_Authenticate_Alice_Should_ReturnToken()
         {
             var content = new FormUrlEncodedContent(
                 new[] {
@@ -101,35 +88,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
         }
 
         [Fact(Skip = "It's not ready yet")]
-        [Trait("Category", "License Server")]
-        public async void DiscoverEndpoint_Should_Returns_200()
-        {
-            var response = await client.GetAsync("/.well-known/openid-configuration");
-            var responseString = await response.Content.ReadAsStringAsync();
-            output.WriteLine(responseString);
-            response.EnsureSuccessStatusCode();
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        [Fact(Skip = "It's not ready yet")]
-        [Trait("Category", "License Server")]
-        public async void DiscoverEndpoint_Should_Returns_ValidJson()
-        {
-            var response = await client.GetAsync("/.well-known/openid-configuration");
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-            response.EnsureSuccessStatusCode();
-
-            var responseString = await response.Content.ReadAsStringAsync();
-            output.WriteLine(responseString);
-            object responseJson = JsonConvert.DeserializeObject(responseString);
-
-            responseJson.Should().NotBeNull();
-        }
-
-        [Fact(Skip = "It's not ready yet")]
-        [Trait("Category", "License Server")]
-        public async void DiscoverEndpoint_ShouldNot_GrantUserToken_WithoutUserClient()
+        public async void When_Authenticate_Alice_WithoutClient_Should_Return400()
         {
             var content = new FormUrlEncodedContent(
                 new[] {
@@ -145,10 +104,46 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
-        public void Dispose()
+        [Fact(Skip = "It's not ready yet")]
+        public async void When_Authenticate_ApiClient_Should_ReturnToken()
         {
-            client.Dispose();
-            server.Dispose();
+            var content = new FormUrlEncodedContent(
+                new[] {
+                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                    new KeyValuePair<string, string>("client_id", "api_client"),
+                    new KeyValuePair<string, string>("client_secret", "secret")
+                }
+            );
+
+            var response = await client.PostAsync("/connect/token", content);
+            var responseString = await response.Content.ReadAsStringAsync();
+            output.WriteLine(responseString);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact(Skip = "It's not ready yet")]
+        public async void When_CallDiscover_Should_Return200()
+        {
+            var response = await client.GetAsync("/.well-known/openid-configuration");
+            var responseString = await response.Content.ReadAsStringAsync();
+            output.WriteLine(responseString);
+            response.EnsureSuccessStatusCode();
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact(Skip = "It's not ready yet")]
+        public async void When_CallDiscover_Should_ReturnJson()
+        {
+            var response = await client.GetAsync("/.well-known/openid-configuration");
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            response.EnsureSuccessStatusCode();
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            output.WriteLine(responseString);
+            object responseJson = JsonConvert.DeserializeObject(responseString);
+
+            responseJson.Should().NotBeNull();
         }
 
         #endregion Public Methods

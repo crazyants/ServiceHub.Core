@@ -24,12 +24,13 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.License.Fixtures.Unit
 {
-    public class AccountController_Tests : IDisposable
+    [Trait("Category", "License Server")]
+    public class AccountControllerFixtures : IDisposable
     {
         #region Private Fields
 
         private readonly ITestOutputHelper output;
-        private AccountController accountController;
+        private IdentityServer4.Quickstart.UI.AccountController accountController;
         private Mock<IClientStore> mockClientStore;
         private Mock<IHttpContextAccessor> mockHttpContextAccessor;
         private Mock<IIdentityServerInteractionService> mockInteraction;
@@ -39,7 +40,7 @@ namespace Mp.Sh.Core.License.Fixtures.Unit
 
         #region Public Constructors
 
-        public AccountController_Tests(ITestOutputHelper output)
+        public AccountControllerFixtures(ITestOutputHelper output)
         {
             this.output = output;
             mockInteraction = new Mock<IIdentityServerInteractionService>();
@@ -59,10 +60,12 @@ namespace Mp.Sh.Core.License.Fixtures.Unit
 
         #region Public Methods
 
+        public void Dispose()
+        {
+        }
+
         [Fact(Skip = "It's not ready yet")]
-        [Trait("Category", "License Server")]
-        [Trait("Category", "Account")]
-        public async void AccountController_GetLogin_Should_ReturnProviders()
+        public async void When_LoginGet_Should_ReturnLoginViewModel()
         {
             IActionResult result = await accountController.Login("http://returnurl");
             ViewResult viewResult = Assert.IsType<ViewResult>(result);
@@ -70,10 +73,6 @@ namespace Mp.Sh.Core.License.Fixtures.Unit
             LoginViewModel viewModel = (LoginViewModel)viewResult.Model;
             viewModel.ExternalProviders.ToList()
                 .Should().HaveCount(4);
-        }
-
-        public void Dispose()
-        {
         }
 
         #endregion Public Methods

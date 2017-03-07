@@ -21,6 +21,7 @@ using Mp.Sh.Core.License.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.ActiveDirectory;
+using System;
 
 namespace Mp.Sh.Core.License
 {
@@ -178,8 +179,8 @@ namespace Mp.Sh.Core.License
 
             // identity models
             services
-                .AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext, Guid>()
                 .AddDefaultTokenProviders();
 
             // [asp.net core mvc]

@@ -10,7 +10,6 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Mp.Sh.Core.AspNet.Configurations;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,7 +18,8 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.AspNet.Fixtures.Unit
 {
-    public class SocialProvidersConfiguration_Tests : IDisposable
+    [Trait("Category", "Configuration")]
+    public class SocialProvidersConfigurationFixtures : IDisposable
     {
         #region Private Fields
 
@@ -32,12 +32,12 @@ namespace Mp.Sh.Core.AspNet.Fixtures.Unit
 
         #region Public Constructors
 
-        public SocialProvidersConfiguration_Tests(ITestOutputHelper output)
+        public SocialProvidersConfigurationFixtures(ITestOutputHelper output)
         {
             this.output = output;
 
             var builder = new ConfigurationBuilder()
-                .SetBasePath(new FileInfo(typeof(SocialProvidersConfiguration_Tests).GetTypeInfo().Assembly.Location).Directory.FullName)
+                .SetBasePath(new FileInfo(typeof(SocialProvidersConfigurationFixtures).GetTypeInfo().Assembly.Location).Directory.FullName)
                 .AddJsonFile("mock.providers.json");
             configuration = builder.Build();
 
@@ -56,60 +56,53 @@ namespace Mp.Sh.Core.AspNet.Fixtures.Unit
         }
 
         [Fact]
-        [Trait("Category", "Libraries")]
-        public void SocialProviders_Should_Contain_ClientId()
-        {
-            providers.Providers.First()
-                .ClientId.Should().Be("12345-ABCDE");
-        }
-
-        [Fact]
-        [Trait("Category", "Libraries")]
-        public void SocialProviders_Should_Contain_ClientKey()
-        {
-            providers.Providers.First()
-                .ClientKey.Should().Be("99999-XXXXX");
-        }
-
-        [Fact]
-        [Trait("Category", "Libraries")]
-        public void SocialProviders_Should_Contain_Facebook()
+        public void When_FacebookConfigured_Should_ReturnProvider()
         {
             providers.Providers.Should()
                 .ContainSingle(p => p.Name == "Facebook");
         }
 
         [Fact]
-        [Trait("Category", "Libraries")]
-        public void SocialProviders_Should_Contain_Google()
+        public void When_GoogleConfigured_Should_ReturnProvider()
         {
             providers.Providers.Should()
                 .ContainSingle(p => p.Name == "Google");
         }
 
         [Fact]
-        [Trait("Category", "Libraries")]
-        public void SocialProviders_Should_Contain_LinkedIn()
+        public void When_LinkedInConfigured_Should_ReturnProvider()
         {
             providers.Providers.Should()
                 .ContainSingle(p => p.Name == "LinkedIn");
         }
 
         [Fact]
-        [Trait("Category", "Libraries")]
-        public void SocialProviders_Should_Contain_Twitter()
+        public void When_ProviderConfigured_Should_ContainClientId()
         {
-            providers.Providers.Should()
-                .ContainSingle(p => p.Name == "Twitter");
+            providers.Providers.First()
+                .ClientId.Should().Be("12345-ABCDE");
         }
 
         [Fact]
-        [Trait("Category", "Libraries")]
-        public void SocialProviders_Should_Deserialize()
+        public void When_ProviderConfigured_Should_ContainClientKey()
+        {
+            providers.Providers.First()
+                .ClientKey.Should().Be("99999-XXXXX");
+        }
+
+        [Fact]
+        public void When_ProviderConfigured_Should_Deserialize()
         {
             section.Should().NotBeNull();
             providers.Should().NotBeNull();
             providers.Providers.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void When_TwitterConfigured_Should_ReturnProvider()
+        {
+            providers.Providers.Should()
+                .ContainSingle(p => p.Name == "Twitter");
         }
 
         #endregion Public Methods

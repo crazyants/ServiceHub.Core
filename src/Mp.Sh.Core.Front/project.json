@@ -17,7 +17,7 @@
     "Microsoft.AspNetCore.StaticFiles": "1.1.0",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
     "Microsoft.AspNetCore.Authentication.OpenIdConnect": "1.1.0",
-    "Microsoft.TypeScript.Compiler": "2.1.5"
+    "Microsoft.TypeScript.Compiler": "2.2.1"
   },
 
   "tools": {

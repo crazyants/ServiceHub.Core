@@ -8,18 +8,17 @@ Last Edit: Raffaele Garofalo
 
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.License.Fixtures.Integration
 {
-    public class AccountController_Tests : IDisposable
+    [Trait("Category", "License Server")]
+    public class AccountControllerFixtures : IDisposable
     {
         #region Private Fields
 
@@ -31,7 +30,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
 
         #region Public Constructors
 
-        public AccountController_Tests(ITestOutputHelper output)
+        public AccountControllerFixtures(ITestOutputHelper output)
         {
             this.output = output;
 
@@ -51,10 +50,14 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
 
         #region Public Methods
 
+        public void Dispose()
+        {
+            client.Dispose();
+            intServer.Dispose();
+        }
+
         [Fact]
-        [Trait("Category", "License Server")]
-        [Trait("Category", "Account")]
-        public async void AccountController_GetLogin_Return_200()
+        public async void When_LoginGet_Should_Return200()
         {
             var response = await client.GetAsync("/account/login");
             var responseString = await response.Content.ReadAsStringAsync();
@@ -63,9 +66,7 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
         }
 
         [Fact(Skip = "It's not ready yet")]
-        [Trait("Category", "License Server")]
-        [Trait("Category", "Account")]
-        public async void AccountController_UserToken_Return_200()
+        public async void When_Token_WithValidCredentials_Should_Return200()
         {
             var content = new FormUrlEncodedContent(
                 new[] {
@@ -81,12 +82,6 @@ namespace Mp.Sh.Core.License.Fixtures.Integration
             var responseString = await response.Content.ReadAsStringAsync();
             output.WriteLine(responseString);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        public void Dispose()
-        {
-            client.Dispose();
-            intServer.Dispose();
         }
 
         #endregion Public Methods
