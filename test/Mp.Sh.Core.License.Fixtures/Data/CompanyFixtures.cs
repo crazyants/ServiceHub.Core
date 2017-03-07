@@ -10,6 +10,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Mp.Sh.Core.Fixtures;
 using Mp.Sh.Core.License.Data;
+using Mp.Sh.Core.License.Fixtures.Mocks;
 using Mp.Sh.Core.License.Models;
 using System;
 using System.Linq;
@@ -34,63 +35,88 @@ namespace Mp.Sh.Core.License.Fixtures.Data
         [Fact]
         public void When_DeleteExisting_Should_RemoveOnDatabase()
         {
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
             {
-                var company = new Company { Id = Guid.NewGuid(), Name = "Some Name", Description = "Some Description" };
+                var company = ModelMockFactory.BuildCompany();
                 context.Set<Company>().Add(company);
                 context.SaveChanges();
             }
 
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
             {
                 var expected = context.Set<Company>().Single();
                 context.Set<Company>().Remove(expected);
                 context.SaveChanges();
             }
 
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
             {
                 context.Set<Company>().Count().Should().Be(0);
             }
         }
 
         [Fact]
-        public void When_ModifyExisting_Should_ModifyOnDatabase()
+        public void When_DeleteExisting_WithInstallations_Should_DeleteAlsoInstallations()
         {
-            using (var context = new ApplicationDbContext(options))
+            var company = ModelMockFactory.BuildCompany();
+            company.CreateInstallation(DateTime.Today, "clientele", "hub", "odata");
+
+            using (var context = BuildContext())
             {
-                var company = new Company { Id = Guid.NewGuid(), Name = "Some Name", Description = "Some Description" };
                 context.Set<Company>().Add(company);
                 context.SaveChanges();
             }
 
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
             {
                 var expected = context.Set<Company>().Single();
-                expected.Name = "new name";
-                expected.Description = "new description";
+                context.Set<Company>().Remove(expected);
                 context.SaveChanges();
             }
 
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
+            {
+                context.Set<Company>().Count().Should().Be(0);
+                context.Set<Installation>().Count().Should().Be(0);
+            }
+        }
+
+        [Fact]
+        public void When_ModifyExisting_Should_ModifyOnDatabase()
+        {
+            using (var context = BuildContext())
+            {
+                var company = ModelMockFactory.BuildCompany();
+                context.Set<Company>().Add(company);
+                context.SaveChanges();
+            }
+
+            using (var context = BuildContext())
+            {
+                var expected = context.Set<Company>().Single()
+                    .ChangeInformation(name: "new name xxx", description: "new description xxx");
+                context.SaveChanges();
+            }
+
+            using (var context = BuildContext())
             {
                 var expected = context.Set<Company>().Single();
-                expected.Name.Should().Be("new name");
-                expected.Description.Should().Be("new description");
+                expected.Name.Should().Be("new name xxx");
+                expected.Description.Should().Be("new description xxx");
             }
         }
 
         [Fact]
         public void When_SaveNew_Should_CreateId()
         {
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
             {
-                var company = new Company { Name = "Some Name", Description = "Some Description" };
+                var company = ModelMockFactory.BuildCompany();
                 context.Set<Company>().Add(company);
                 context.SaveChanges();
             }
 
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
             {
                 var expected = context.Set<Company>().Single();
                 expected.Id.Should().NotBe(Guid.Empty);
@@ -100,31 +126,51 @@ namespace Mp.Sh.Core.License.Fixtures.Data
         [Fact]
         public void When_SaveNew_Should_ExistsOnDatabase()
         {
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
             {
-                var company = new Company { Id = Guid.NewGuid(), Name = "Some Name", Description = "Some Description" };
+                var company = ModelMockFactory.BuildCompany();
                 context.Set<Company>().Add(company);
                 context.SaveChanges();
             }
 
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
             {
                 context.Set<Company>().Count().Should().Be(1);
             }
         }
 
         [Fact]
-        public void When_SaveNew_WithInstallation_Should_SaveCompanyAndInstallation()
+        public void When_SaveNew_WithExistingName_ShouldThrow()
         {
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
             {
-                var company = new Company { Id = Guid.NewGuid(), Name = "Some Name", Description = "Some Description" };
-                company.Installations.Add(new Installation { });
+                var company = ModelMockFactory.BuildCompany();
                 context.Set<Company>().Add(company);
                 context.SaveChanges();
             }
 
-            using (var context = new ApplicationDbContext(options))
+            using (var context = BuildContext())
+            {
+                var company = ModelMockFactory.BuildCompany();
+                context.Set<Company>().Add(company);
+
+                Action action = () => context.SaveChanges();
+                action.ShouldThrow<Exception>();
+            }
+        }
+
+        [Fact]
+        public void When_SaveNew_WithInstallation_Should_SaveCompanyAndInstallation()
+        {
+            using (var context = BuildContext())
+            {
+                var company = ModelMockFactory.BuildCompany();
+                company.CreateInstallation(startDate: DateTime.UtcNow, clientele: "clientele", hub: "hub", odata: "odata");
+                context.Set<Company>().Add(company);
+                context.SaveChanges();
+            }
+
+            using (var context = BuildContext())
             {
                 var expected = context.Set<Company>().Include(x => x.Installations).Single();
                 expected.Installations.Should().HaveCount(1);
@@ -132,26 +178,35 @@ namespace Mp.Sh.Core.License.Fixtures.Data
             }
         }
 
+        [Fact]
+        public void When_UpdateExisting_WithExistingName_ShouldThrow()
+        {
+            using (var context = BuildContext())
+            {
+                var company = ModelMockFactory.BuildCompany();
+                context.Set<Company>().Add(company);
+                context.SaveChanges();
+            }
+
+            using (var context = BuildContext())
+            {
+                var company = ModelMockFactory.BuildCompany()
+                    .ChangeInformation("new name", "new description");
+                context.Set<Company>().Add(company);
+                context.SaveChanges();
+            }
+
+            using (var context = BuildContext())
+            {
+                var expected = context.Set<Company>()
+                    .Single(x => x.Name == "name")
+                    .ChangeInformation("new name", "new description");
+
+                Action action = () => context.SaveChanges();
+                action.ShouldThrow<Exception>();
+            }
+        }
+
         #endregion Public Methods
-
-        #region Protected Methods
-
-        protected override void FinalizeDatabase()
-        {
-            using (var context = new ApplicationDbContext(options))
-            {
-                context.Database.EnsureDeleted();
-            }
-        }
-
-        protected override void InitializeDatabase()
-        {
-            using (var context = new ApplicationDbContext(options))
-            {
-                context.Database.EnsureCreated();
-            }
-        }
-
-        #endregion Protected Methods
     }
 }

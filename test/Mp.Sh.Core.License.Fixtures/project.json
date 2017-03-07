@@ -22,7 +22,8 @@
     "Mp.Sh.Core.License": "1.0.0-*",
     "NETStandard.Library": "1.6.1",
     "xunit": "2.2.0",
-    "Mp.Sh.Core.Fixtures": "1.0.0-*"
+    "Mp.Sh.Core.Fixtures": "1.0.0-*",
+    "Microsoft.CodeCoverage": "1.0.2"
   },
 
   "tools": {

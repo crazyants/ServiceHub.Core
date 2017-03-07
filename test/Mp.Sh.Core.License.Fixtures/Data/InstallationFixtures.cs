@@ -9,8 +9,10 @@ Last Edit: Raffaele Garofalo
 using FluentAssertions;
 using Mp.Sh.Core.Fixtures;
 using Mp.Sh.Core.License.Data;
+using Mp.Sh.Core.License.Fixtures.Mocks;
 using Mp.Sh.Core.License.Models;
 using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -30,37 +32,27 @@ namespace Mp.Sh.Core.License.Fixtures.Data
         #region Public Methods
 
         [Fact]
-        public void When_SaveNew_WithoutCompany_Should_Throw()
+        public void When_SaveNew_IfEndDateIsProvided_ShouldSaveEndDate()
         {
-            using (var context = new ApplicationDbContext(options))
+            var company = ModelMockFactory.BuildCompany();
+            var installation = company
+                .CreateInstallation(DateTime.UtcNow, "clientele", "hub", "odata")
+                .SetEndDate(DateTime.UtcNow.AddYears(1));
+
+            using (var context = BuildContext())
             {
-                var installation = new Installation { };
-                context.Set<Installation>().Add(installation);
-                Action action = () => context.SaveChanges();
-                action.ShouldThrow<Exception>();
+                context.Set<Company>().Add(company);
+                context.SaveChanges();
+            }
+
+            using (var context = BuildContext())
+            {
+                var expected = context.Set<Installation>().Single();
+                expected.EndDate.Value.Should()
+                    .BeAfter(DateTime.UtcNow);
             }
         }
 
         #endregion Public Methods
-
-        #region Protected Methods
-
-        protected override void FinalizeDatabase()
-        {
-            using (var context = new ApplicationDbContext(options))
-            {
-                context.Database.EnsureDeleted();
-            }
-        }
-
-        protected override void InitializeDatabase()
-        {
-            using (var context = new ApplicationDbContext(options))
-            {
-                context.Database.EnsureCreated();
-            }
-        }
-
-        #endregion Protected Methods
     }
 }

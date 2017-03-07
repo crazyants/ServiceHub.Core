@@ -11,6 +11,7 @@ using System.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace Mp.Sh.Core.Fixtures
 {
@@ -22,6 +23,7 @@ namespace Mp.Sh.Core.Fixtures
         #region Protected Fields
 
         protected IDbConnection connection;
+        protected ILoggerFactory loggerFactory;
         protected DbContextOptions<TContext> options;
         protected ITestOutputHelper output;
 
@@ -36,11 +38,15 @@ namespace Mp.Sh.Core.Fixtures
         {
             this.output = output;
 
-            connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
+            this.loggerFactory = new LoggerFactory();
+            this.loggerFactory.AddProvider(new LoggerProviderForFixtures(output));
+
+            this.connection = new SqliteConnection("DataSource=:memory:");
+            this.connection.Open();
 
             this.options = new DbContextOptionsBuilder<TContext>()
                 .UseSqlite((SqliteConnection)connection)
+                .UseLoggerFactory(loggerFactory)
                 .Options;
 
             this.InitializeDatabase();
@@ -65,14 +71,38 @@ namespace Mp.Sh.Core.Fixtures
         #region Protected Methods
 
         /// <summary>
+        /// Build a new TContext using the in memory options 
+        /// </summary>
+        /// <returns></returns>
+        protected TContext BuildContext()
+        {
+            var context = Activator.CreateInstance(typeof(TContext), new object[] { options }) as TContext;
+            return context;
+        }
+
+        /// <summary>
         /// Should be overriden and provides instructions to finalize and destroy a Test Database 
         /// </summary>
-        protected abstract void FinalizeDatabase();
+        protected void FinalizeDatabase()
+        {
+            using (var context = BuildContext())
+            {
+                context.Database.EnsureDeleted();
+            }
+        }
 
         /// <summary>
         /// Should be overriden and provides instructions to initialize a Database schema 
         /// </summary>
-        protected abstract void InitializeDatabase();
+        protected void InitializeDatabase()
+        {
+            using (var context = BuildContext())
+            {
+                context.Database.Migrate();
+
+                // RG cannot use EnsureCreated because it will not take into account DB Schema migrations!!
+            }
+        }
 
         #endregion Protected Methods
     }
