@@ -17,7 +17,7 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.License.Fixtures.Integration
 {
-    [Trait("Category", "License Server")]
+    [Trait("Controller", "AccountController")]
     public class AccountControllerFixtures : IDisposable
     {
         #region Private Fields

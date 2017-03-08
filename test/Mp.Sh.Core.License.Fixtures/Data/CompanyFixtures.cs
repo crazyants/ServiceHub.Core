@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.License.Fixtures.Data
 {
-    [Trait("Category", "DAL")]
+    [Trait("Dal", "Company")]
     public class CompanyFixtures : BaseDataFixture<ApplicationDbContext>
     {
         #region Public Constructors

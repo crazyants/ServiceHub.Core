@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.License.Fixtures.Data
 {
-    [Trait("Category", "DAL")]
+    [Trait("Dal", "Installation")]
     public class InstallationFixtures : BaseDataFixture<ApplicationDbContext>
     {
         #region Public Constructors

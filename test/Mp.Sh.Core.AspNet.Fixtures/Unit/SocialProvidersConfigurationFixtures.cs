@@ -18,7 +18,7 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.AspNet.Fixtures.Unit
 {
-    [Trait("Category", "Configuration")]
+    [Trait("Utilities", "Configuration")]
     public class SocialProvidersConfigurationFixtures : IDisposable
     {
         #region Private Fields

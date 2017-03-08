@@ -15,6 +15,7 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.License.Fixtures.Unit
 {
+    [Trait("Model", "Company")]
     public class CompanyFixtures : IDisposable
     {
         #region Private Fields

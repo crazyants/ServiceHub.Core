@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1C834D9C-0659-4246-AC4A-90C89BA01966}"
 EndProject
@@ -9,29 +9,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A872E117-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{83F298B8-E9CD-4132-BB34-AB7439764D7A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Mp.Sh.Core.License", "src\Mp.Sh.Core.License\Mp.Sh.Core.License.xproj", "{028696DE-C661-44D4-8773-88EB3D7B8D50}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Mp.Sh.Core.Front", "src\Mp.Sh.Core.Front\Mp.Sh.Core.Front.xproj", "{F45278CB-563C-4EC2-ADDF-5CF694CA7D22}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Mp.Sh.Core.OData", "src\Mp.Sh.Core.OData\Mp.Sh.Core.OData.xproj", "{7FE25A88-D7DB-4BA0-957B-CA28177E742C}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Mp.Sh.Core.License.Fixtures", "test\Mp.Sh.Core.License.Fixtures\Mp.Sh.Core.License.Fixtures.xproj", "{D40C5660-BE2E-4971-AAEF-768E26D8BE90}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Mp.Sh.Core.OData.Fixtures", "test\Mp.Sh.Core.OData.Fixtures\Mp.Sh.Core.OData.Fixtures.xproj", "{7FBBD3BA-220B-4F0D-A3AE-4414A4A0632A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{55C0D089-3A7E-43EA-9D88-2D4BC735657E}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Mp.Sh.Core.AspNet", "src\Mp.Sh.Core.AspNet\Mp.Sh.Core.AspNet.xproj", "{D91DAAF6-179D-4F45-9964-F58962ABBF70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.License", "src\Mp.Sh.Core.License\Mp.Sh.Core.License.csproj", "{028696DE-C661-44D4-8773-88EB3D7B8D50}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Mp.Sh.Core.AspNet.Fixtures", "test\Mp.Sh.Core.AspNet.Fixtures\Mp.Sh.Core.AspNet.Fixtures.xproj", "{26517373-2A60-45BE-B162-3EBA1A757178}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.Front", "src\Mp.Sh.Core.Front\Mp.Sh.Core.Front.csproj", "{F45278CB-563C-4EC2-ADDF-5CF694CA7D22}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Mp.Sh.Core.Fixtures", "src\Mp.Sh.Core.Fixtures\Mp.Sh.Core.Fixtures.xproj", "{72891A16-7E34-40E0-B4B3-813DD4D28B8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.OData", "src\Mp.Sh.Core.OData\Mp.Sh.Core.OData.csproj", "{7FE25A88-D7DB-4BA0-957B-CA28177E742C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Mp.Sh.Core.Locales", "src\Mp.Sh.Core.Locales\Mp.Sh.Core.Locales.xproj", "{966B2A39-6836-44B0-8711-F6C98D4C76A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.License.Fixtures", "test\Mp.Sh.Core.License.Fixtures\Mp.Sh.Core.License.Fixtures.csproj", "{D40C5660-BE2E-4971-AAEF-768E26D8BE90}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.OData.Fixtures", "test\Mp.Sh.Core.OData.Fixtures\Mp.Sh.Core.OData.Fixtures.csproj", "{7FBBD3BA-220B-4F0D-A3AE-4414A4A0632A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.AspNet", "src\Mp.Sh.Core.AspNet\Mp.Sh.Core.AspNet.csproj", "{D91DAAF6-179D-4F45-9964-F58962ABBF70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.AspNet.Fixtures", "test\Mp.Sh.Core.AspNet.Fixtures\Mp.Sh.Core.AspNet.Fixtures.csproj", "{26517373-2A60-45BE-B162-3EBA1A757178}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.Fixtures", "src\Mp.Sh.Core.Fixtures\Mp.Sh.Core.Fixtures.csproj", "{72891A16-7E34-40E0-B4B3-813DD4D28B8D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.Locales", "src\Mp.Sh.Core.Locales\Mp.Sh.Core.Locales.csproj", "{966B2A39-6836-44B0-8711-F6C98D4C76A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

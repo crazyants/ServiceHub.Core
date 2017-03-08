@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 
 namespace Mp.Sh.Core.License.Fixtures.Integration
 {
-    [Trait("Category", "License Server")]
+    [Trait("Controller", "IdentityServer")]
     public class DiscoverEndpointFixtures : IDisposable
     {
         #region Private Fields
