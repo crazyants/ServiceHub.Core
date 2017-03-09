@@ -28,7 +28,7 @@ namespace Mp.Sh.Core.License.Models
         public Company(string name, string description)
         {
             this.Installations = new List<Installation>();
-            this.CompaniesUsers = new List<CompaniesUsers>();
+            this.Users = new List<ApplicationUser>();
 
             this.Name = name;
             this.Description = description;
@@ -52,7 +52,7 @@ namespace Mp.Sh.Core.License.Models
         /// <summary>
         /// The Users associated with this Company 
         /// </summary>
-        public List<CompaniesUsers> CompaniesUsers { get; private set; }
+        public List<ApplicationUser> Users { get; private set; }
 
         /// <summary>
         /// An additional Description for the Company 

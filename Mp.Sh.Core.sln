@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A872E117-B0D8-485A-91C9-9C5880B336E4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{83F298B8-E9CD-4132-BB34-AB7439764D7A}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{55C0D089-3A7E-43EA-9D88-2D4BC735657E}"
 	ProjectSection(SolutionItems) = preProject
@@ -31,6 +34,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.Fixtures", "src\Mp.Sh.Core.Fixtures\Mp.Sh.Core.Fixtures.csproj", "{72891A16-7E34-40E0-B4B3-813DD4D28B8D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mp.Sh.Core.Locales", "src\Mp.Sh.Core.Locales\Mp.Sh.Core.Locales.csproj", "{966B2A39-6836-44B0-8711-F6C98D4C76A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mp.Sh.Core.Utils", "src\Mp.Sh.Core\Mp.Sh.Core.Utils\Mp.Sh.Core.Utils.csproj", "{831B919F-2A39-4B22-BFA0-6F037CC49BC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +79,10 @@ Global
 		{966B2A39-6836-44B0-8711-F6C98D4C76A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{966B2A39-6836-44B0-8711-F6C98D4C76A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{966B2A39-6836-44B0-8711-F6C98D4C76A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{831B919F-2A39-4B22-BFA0-6F037CC49BC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{831B919F-2A39-4B22-BFA0-6F037CC49BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{831B919F-2A39-4B22-BFA0-6F037CC49BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{831B919F-2A39-4B22-BFA0-6F037CC49BC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,5 +97,6 @@ Global
 		{26517373-2A60-45BE-B162-3EBA1A757178} = {83F298B8-E9CD-4132-BB34-AB7439764D7A}
 		{72891A16-7E34-40E0-B4B3-813DD4D28B8D} = {1C834D9C-0659-4246-AC4A-90C89BA01966}
 		{966B2A39-6836-44B0-8711-F6C98D4C76A1} = {1C834D9C-0659-4246-AC4A-90C89BA01966}
+		{831B919F-2A39-4B22-BFA0-6F037CC49BC7} = {1C834D9C-0659-4246-AC4A-90C89BA01966}
 	EndGlobalSection
 EndGlobal

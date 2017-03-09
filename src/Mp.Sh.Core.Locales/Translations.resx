@@ -123,11 +123,20 @@
   <data name="Company_NotNull" xml:space="preserve">
     <value>The Company cannot be null or empty</value>
   </data>
+  <data name="Email_Invalid" xml:space="preserve">
+    <value>The E-mail address has an invalid format</value>
+  </data>
+  <data name="Email_NotNull" xml:space="preserve">
+    <value>The E-mail address cannot be null or empty</value>
+  </data>
   <data name="Hub_NotNull" xml:space="preserve">
     <value>The Service Hub Url cannot be null or empty</value>
   </data>
   <data name="Odata_NotNull" xml:space="preserve">
     <value>The OData Url cannot be null or empty</value>
+  </data>
+  <data name="Password_NotNull" xml:space="preserve">
+    <value>The Password cannot be null or empty</value>
   </data>
   <data name="StartDate_NotNull" xml:space="preserve">
     <value>The StartDate cannot be null or empty</value>

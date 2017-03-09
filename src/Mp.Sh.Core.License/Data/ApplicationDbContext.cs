@@ -79,25 +79,16 @@ namespace Mp.Sh.Core.License.Data
                 i.ToTable("Installations");
                 i.HasKey(x => x.Id);
             });
-            builder.Entity<CompaniesUsers>(i =>
-            {
-                i.ToTable("CompaniesUsers");
-                i.HasKey(x => new { x.CompanyId, x.UserId });
-            });
 
             /* Relationships Mapping */
             builder.Entity<Installation>()
                 .HasOne(x => x.Company)
                 .WithMany(x => x.Installations)
                 .IsRequired();
-            builder.Entity<CompaniesUsers>()
-                .HasOne(x => x.User)
-                .WithMany(x => x.CompaniesUsers)
-                .HasForeignKey(x => x.UserId);
-            builder.Entity<CompaniesUsers>()
+            builder.Entity<ApplicationUser>()
                 .HasOne(x => x.Company)
-                .WithMany(x => x.CompaniesUsers)
-                .HasForeignKey(x => x.CompanyId);
+                .WithMany(x => x.Users)
+                .IsRequired();
         }
 
         #endregion Protected Methods

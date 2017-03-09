@@ -18,9 +18,6 @@ namespace Mp.Sh.Core.License.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CompaniesUsers");
-
-            migrationBuilder.DropTable(
                 name: "Installations");
 
             migrationBuilder.DropTable(
@@ -67,31 +64,6 @@ namespace Mp.Sh.Core.License.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade
                     );
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CompaniesUsers",
-                columns: table => new
-                {
-                    CompanyId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompaniesUsers", x => new { x.CompanyId, x.UserId });
-                    table.UniqueConstraint("AK_CompaniesUsers_CompanyId_UserId", x => new { x.CompanyId, x.UserId });
-                    table.ForeignKey(
-                        name: "FK_CompaniesUsers_Companies_Id",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CompaniesUsers_Users_Id",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
         }
 

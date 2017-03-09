@@ -23,7 +23,7 @@ namespace Mp.Sh.Core.License
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("hosting.json", optional: true)
+                .AddJsonFile("hosting.json", optional: false)
                 .Build();
 
             var host = new WebHostBuilder()
